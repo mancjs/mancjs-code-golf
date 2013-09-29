@@ -17,8 +17,13 @@ var routes = function(app) {
       key: req.param('key')
     };
 
+    var validEntries = _.sortBy(_.where(currentGame.entries, { valid: true }), 'strokes');
+    var invalidEntries = _.sortBy(_.where(currentGame.entries, { valid: false }), 'strokes');
+    var allEntries = validEntries.concat(invalidEntries);
+
     return res.render('play', {
       game: currentGame,
+      entries: allEntries,
       session: session,
       err: req.param('err')
     });
