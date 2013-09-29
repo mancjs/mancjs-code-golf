@@ -11,7 +11,6 @@
   "dependencies": {
     "express": "~3.4.0",
     "mustachex": "0.0.2",
-    "underscore": "~1.5.2",
-    "moment": "~2.2.1"
+    "underscore": "~1.5.2"
   }
 }
