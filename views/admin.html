@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MancJS: JavaScript Golf</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
+  <link href="css/app.css" rel="stylesheet" media="screen" />
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        {{#game.running}}
+        <div class="bs-callout bs-callout-info">
+          <h4>Game is running</h4>
+          <p>Entries are private, submit <a href="/">here</a></p>
+        </div>
+        {{/game.running}}
+
+        {{^game.running}}
+        <div class="bs-callout bs-callout-danger">
+          <h4>Game is stopped</h4>
+          <p>Entries are visible to other users</p>
+        </div>
+        {{/game.running}}
+
+        <form method="post" action="/start">
+          <label for="title">Title <span>(new title starts a new game)</span></label>
+          <input type="text" name="title" id="title" value="{{game.title}}" />
+
+          <label for="description">Description</label>
+          <textarea name="description" id="description" rows="2">{{game.description}}</textarea>
+
+          <label for="input">Input <span>(data passed to the <code>play</code> function)</span></label>
+          <input type="text" name="input" id="input" value="{{game.input}}" />
+
+          <label for="output">Expected output <span>(data received from the <code>play</code> function, supports string, number and array)</span></label>
+          <input type="text" name="output" id="output" value="{{game.output}}" />
+
+          {{#game.entries.length}}
+          <label>Entries</label>
+          <div>{{game.entries.length}}</div>
+          {{/game.entries.length}}
+
+          {{#gameData}}
+          <label>Data</label>
+          <pre>{{gameData}}</pre>
+          {{/gameData}}
+
+          <div class="buttons">
+            <a href="/stop" class="btn btn-lg btn-danger">Stop Game</a>
+            <input type="submit" value="Start Game" class="btn btn-lg btn-success" />
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

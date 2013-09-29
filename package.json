@@ -1,0 +1,17 @@
+{
+  "name": "mancjs-golf",
+  "version": "0.0.0",
+  "description": "The MancJS code golf server",
+  "main": "mancjs-golf.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Martin Rue",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "express": "~3.4.0",
+    "mustachex": "0.0.2",
+    "underscore": "~1.5.2",
+    "moment": "~2.2.1"
+  }
+}
