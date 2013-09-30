@@ -25,7 +25,8 @@ var routes = function(app) {
       game: currentGame,
       entries: allEntries,
       session: session,
-      err: req.param('err')
+      err: req.param('err'),
+      autoreload: req.param('autoreload') === 'true'
     });
   });
 

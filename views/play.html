@@ -90,6 +90,12 @@
         e.preventDefault();
         $('.submit-form input[type="file"]').click();
       });
+
+      {{#autoreload}}
+        setTimeout(function() {
+          window.location = window.location;
+        }, 3000);
+      {{/autoreload}}
     });
 
   </script>
