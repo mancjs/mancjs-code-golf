@@ -2,6 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var crypto = require('crypto');
 var _ = require('underscore');
+var jsmin = require('jsmin').jsmin;
 
 var game;
 var savePath = __dirname + '/data/game.json';
@@ -48,7 +49,7 @@ var addEntry = function(data) {
 
   var countStrokes = function(file) {
     if (fs.existsSync(file)) {
-      var contents = fs.readFileSync(file, 'utf8').replace(/\s/g, '');
+      var contents = jsmin(fs.readFileSync(file, 'utf8'));
       return contents.length;
     }
   };
