@@ -49,7 +49,7 @@ var addEntry = function(data) {
 
   var countStrokes = function(file) {
     if (fs.existsSync(file)) {
-      var contents = jsmin(fs.readFileSync(file, 'utf8'));
+      var contents = jsmin(fs.readFileSync(file, 'utf8'), 3);
       return contents.length;
     }
   };

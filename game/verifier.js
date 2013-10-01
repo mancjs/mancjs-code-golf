@@ -12,18 +12,20 @@ var formatTypeAndValue = function(value) {
 
   var type = getType(value);
 
-  if (type === 'array') return 'array [' + value.toString() + ']';
-  if (type === 'string') return 'string "' + value + '"';
-  if (type === 'undefined') return value;
-  if (type === 'function') return type;
-  return type + ' ' + value;
+  if (type === 'undefined') return 'undefined';
+  if (type === 'function') return 'function';
+  if (type === 'array') return 'array of ' + value.length + ' items';
+  if (type === 'string') return 'string of ' + value.length + ' chars';
+
+  var digits = value.toString().replace(/[^0-9]/g, '').length;
+  return digits + ' digit number';
 };
 
 process.on('message', function(entry) {
   var raiseError = function(expected, actual) {
     var expectedError = formatTypeAndValue(expected);
     var actualError = formatTypeAndValue(actual);
-    throw new Error('expected ' + expectedError + ' but got ' + actualError);
+    throw new Error('expected ' + expectedError + ', got ' + actualError);
   };
 
   try {
@@ -32,7 +34,7 @@ process.on('message', function(entry) {
     if (!global.play)
       throw new Error('no global play function defined');
 
-    var actualOutput = global.play(entry.input);
+    var actualOutput = global.play(eval(entry.input));
     var expectedOutput = eval(entry.output);
 
     if (_.isArray(actualOutput) && _.isArray(expectedOutput)) {
