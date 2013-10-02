@@ -26,27 +26,27 @@ var formatTypeAndValue = function(value) {
 };
 
 process.on('message', function(entry) {
-  var raiseError = function(expected, actual) {
+  var error = function(expected, actual) {
     var expectedError = formatTypeAndValue(expected);
     var actualError = formatTypeAndValue(actual);
-    throw new Error('expected ' + expectedError + ', got ' + actualError);
+    return process.send({ valid: false, err: 'expected ' + expectedError + ', got ' + actualError });
   };
 
   try {
     vm.runInNewContext(fs.readFileSync(entry.file, 'utf8'), global);
 
     if (!global.play)
-      return process.send({ valid: false, err: 'no global play function defined' });
+      return process.send({ valid: false, err: 'No global play function defined' });
 
     var actualOutput = global.play(eval(entry.input));
     var expectedOutput = eval(entry.output);
 
     if (_.isArray(actualOutput) && _.isArray(expectedOutput)) {
       if (actualOutput.toString() !== expectedOutput.toString()) {
-        raiseError(expectedOutput, actualOutput);
+        return error(expectedOutput, actualOutput);
       }
     } else if (actualOutput !== expectedOutput) {
-      raiseError(expectedOutput, actualOutput);
+      return error(expectedOutput, actualOutput);
     }
 
     process.send({ valid: true });
