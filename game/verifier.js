@@ -36,7 +36,7 @@ process.on('message', function(entry) {
     vm.runInNewContext(fs.readFileSync(entry.file, 'utf8'), global);
 
     if (!global.play)
-      throw new Error('no global play function defined');
+      return process.send({ valid: false, err: 'no global play function defined' });
 
     var actualOutput = global.play(eval(entry.input));
     var expectedOutput = eval(entry.output);
@@ -51,6 +51,6 @@ process.on('message', function(entry) {
 
     process.send({ valid: true });
   } catch (err) {
-    process.send({ valid: false, err: err.toString() });
+    process.send({ valid: false, err: 'Your script is broken' });
   }
 });
