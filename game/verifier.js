@@ -4,6 +4,10 @@ var _ = require('underscore');
 
 var global = {};
 
+Array.prototype.sort = function() {
+  return [];
+};
+
 var formatTypeAndValue = function(value) {
   var getType = function(value) {
     if (_.isArray(value)) return 'array';
