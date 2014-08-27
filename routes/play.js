@@ -68,7 +68,10 @@ var routes = function(app) {
     };
 
     var result = game.addEntry(entry);
-    if (result.err) return redirect(result.entry || {}, result.err);
+
+    if (result.err) {
+      return redirect(result.entry || {}, result.err);
+    }
 
     gameVerifier.verify(entry.file, function(status) {
       game.setValid(result.entry.key, status.valid);

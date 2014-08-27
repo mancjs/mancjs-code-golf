@@ -1,8 +1,7 @@
 var fs = require('fs');
-var path = require('path');
 var crypto = require('crypto');
-var _ = require('underscore');
 var jsmin = require('jsmin').jsmin;
+var _ = require('underscore');
 
 var game;
 var savePath = __dirname + '/data/game.json';
@@ -25,12 +24,15 @@ var start = function(data) {
     entries: []
   };
 
-  save();
+  return save();
 };
 
 var stop = function() {
-  if (game) game.running = false;
-  save();
+  if (game) {
+    game.running = false;
+  }
+
+  return save();
 };
 
 var get = function() {
@@ -44,7 +46,7 @@ var addEntry = function(data) {
 
   var getGravatarUrl = function(email) {
     var hash = crypto.createHash('md5').update(email).digest('hex');
-    return 'http://www.gravatar.com/avatar/' + hash + '?s=130';
+    return 'http://www.gravatar.com/avatar/' + hash + '?s=130&d=wavatar';
   };
 
   var countStrokes = function(file) {
@@ -54,7 +56,9 @@ var addEntry = function(data) {
     }
   };
 
-  if (!game.running) return { err: 'Game is not running' };;
+  if (!game.running) {
+    return { err: 'Game is not running' };
+  }
 
   var entry = _.findWhere(game.entries, { email: data.email });
 
@@ -96,12 +100,12 @@ var setValid = function(key, valid) {
 
   if (entry) {
     entry.valid = valid;
-    save();
+    return save();
   }
 };
 
 var save = function() {
-  fs.writeFileSync(savePath, JSON.stringify(game));
+  return fs.writeFileSync(savePath, JSON.stringify(game));
 };
 
 var load = function() {

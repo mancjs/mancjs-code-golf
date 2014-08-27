@@ -4,10 +4,6 @@ var _ = require('underscore');
 
 var global = {};
 
-Array.prototype.sort = function() {
-  return [];
-};
-
 var formatTypeAndValue = function(value) {
   var getType = function(value) {
     if (_.isArray(value)) return 'array';
@@ -29,14 +25,21 @@ process.on('message', function(entry) {
   var error = function(expected, actual) {
     var expectedError = formatTypeAndValue(expected);
     var actualError = formatTypeAndValue(actual);
-    return process.send({ valid: false, err: 'expected ' + expectedError + ', got ' + actualError });
+
+    return process.send({
+      valid: false,
+      err: 'expected ' + expectedError + ', got ' + actualError
+    });
   };
 
   try {
-    vm.runInNewContext(fs.readFileSync(entry.file, 'utf8'), global);
+    var script = fs.readFileSync(entry.file, 'utf8');
+    script = 'Array.prototype.sort = function() { throw true; }; ' + script;
+    vm.runInNewContext(script, global);
 
-    if (!global.play)
+    if (!global.play) {
       return process.send({ valid: false, err: 'No global play function defined' });
+    }
 
     var actualOutput = global.play(eval(entry.input));
     var expectedOutput = eval(entry.output);

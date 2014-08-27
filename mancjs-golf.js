@@ -1,4 +1,3 @@
-var http = require('http');
 var express = require('express');
 var mustachex = require('mustachex');
 
@@ -17,4 +16,4 @@ app.configure(function() {
 require('./routes/play')(app);
 require('./routes/admin')(app);
 
-http.createServer(app).listen(1122);
+app.listen(1122);
