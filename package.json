@@ -4,6 +4,7 @@
   "description": "The MancJS code golf server",
   "main": "mancjs-golf.js",
   "scripts": {
+    "start": "node mancjs-golf",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Martin Rue",

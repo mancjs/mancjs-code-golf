@@ -4,7 +4,7 @@ var _ = require('underscore');
 
 var global = {};
 
-var formatTypeAndValue = function(value) {
+var formatTypeAndValue = function(value, actual) {
   var getType = function(value) {
     if (_.isArray(value)) return 'array';
     return typeof value;
@@ -14,8 +14,8 @@ var formatTypeAndValue = function(value) {
 
   if (type === 'undefined') return 'undefined';
   if (type === 'function') return 'function';
-  if (type === 'array') return 'array of ' + value.length + ' items';
-  if (type === 'string') return 'string of ' + value.length + ' chars';
+  if (type === 'array') return (actual ? 'different ' : '') + 'array of ' + value.length + ' items';
+  if (type === 'string') return (actual ? 'different ' : '') + 'string of ' + value.length + ' chars';
 
   var digits = value.toString().replace(/[^0-9]/g, '').length;
   return digits + ' digit number';
@@ -23,8 +23,8 @@ var formatTypeAndValue = function(value) {
 
 process.on('message', function(entry) {
   var error = function(expected, actual) {
-    var expectedError = formatTypeAndValue(expected);
-    var actualError = formatTypeAndValue(actual);
+    var expectedError = formatTypeAndValue(expected, false);
+    var actualError = formatTypeAndValue(actual, true);
 
     return process.send({
       valid: false,
