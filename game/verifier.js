@@ -33,8 +33,13 @@ process.on('message', function(entry) {
   };
 
   try {
-    var script = fs.readFileSync(entry.file, 'utf8');
-    script = 'Array.prototype.sort = function() { throw true; }; ' + script;
+    var submission = fs.readFileSync(entry.file, 'utf8');
+
+    var script = '';
+    script += '"use strict";\n';
+    script += 'Array.prototype.sort = function() { throw true; };\n';
+    script += submission;
+
     vm.runInNewContext(script, global);
 
     if (!global.play) {
@@ -54,6 +59,16 @@ process.on('message', function(entry) {
 
     process.send({ valid: true });
   } catch (err) {
-    process.send({ valid: false, err: 'Your script is broken' });
+    var message = 'Your script is broken';
+
+    if (err.message && err.message.match(/is not defined/g)) {
+      message += ': ' + err.message;
+    }
+
+    console.log('team: ' + entry.team);
+    console.log(err);
+    console.log('----');
+
+    process.send({ valid: false, err: message });
   }
 });

@@ -73,7 +73,7 @@ var routes = function(app) {
       return redirect(result.entry || {}, result.err);
     }
 
-    gameVerifier.verify(entry.file, function(status) {
+    gameVerifier.verify(entry.file, entry.team, function(status) {
       game.setValid(result.entry.key, status.valid);
       return redirect(result.entry || {}, status.err);
     });
