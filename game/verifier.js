@@ -46,7 +46,8 @@ process.on('message', function(entry) {
       return process.send({ valid: false, err: 'No global play function defined' });
     }
 
-    var actualOutput = global.play(eval(entry.input));
+    var input = entry.input.match(/\{/g) ? JSON.parse(entry.input) : eval(entry.input);
+    var actualOutput = global.play(input);
     var expectedOutput = eval(entry.output);
 
     if (_.isArray(actualOutput) && _.isArray(expectedOutput)) {
