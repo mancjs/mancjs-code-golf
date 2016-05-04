@@ -1,0 +1,145 @@
+1: Max Number
+
+Title:       Max Number
+Description: Your play function will be called with an array of random numbers. Find and return the maximum number in the array.
+Input:       [22134, 40, 54657, 69273, 35176, 23613, 5033, 48215, 65712, 31751, 38473, 75430, 88512, 82561, 52320, 60006, 6455, 23723, 7837, 7273, 64593, 44604, 77924, 55975, 65513, 82881, 961, 80147, 17462, 10362, 29733, 33068, 39812, 10938, 87914, 72291, 43353, 91648, 79869, 30118, 40918, 5233, 17809, 3821, 92307, 27385, 42783, 8187, 41937, 85004, 40616, 31763, 77133, 17017, 13760, 81489, 27774, 56123, 91954, 25390, 41226, 60950, 61296, 5272, 56529, 48658, 75797, 49430, 29542, 66942, 56079, 13836, 82766, 44342, 57474, 45179, 2373, 3352, 73407, 24002, 71456, 70358, 92467, 39885, 12876, 17276, 43174, 35000, 88802, 81142, 31332, 39298, 89715, 59447, 21376, 67033, 74826, 14902, 22437, 62426, 27415, 92410, 84983, 70297, 68835, 86891, 85449, 13752, 93714, 49596, 75182, 78269, 82052, 92635, 43026, 8364, 1160, 86133, 67352, 17050, 95037, 80432, 69865, 65142, 85147, 85863, 27593, 47629, 21164, 72444, 58620, 22448, 90209, 48699, 37891, 47500, 69138, 6972, 63361, 41754, 32126, 83494, 17452, 96826, 91, 58473, 57424, 50918, 14546, 49054, 8168, 7335, 21276, 95819, 12947, 29109, 7240, 11558, 79240, 96918, 34074, 98618, 77657, 43543, 78038, 24829, 55771, 36068, 5339, 26436, 73364, 39540, 90534, 23226, 15583, 51127, 1845, 46055, 92019, 77349, 43072, 2258, 17137, 52982, 99071, 5323, 35250, 79877, 2180, 3912, 84607, 2210, 49372, 25562, 34316, 64045, 51481, 70716, 34649, 87529, 56225, 63727, 45825, 67197, 60086, 10830, 74494, 12513, 64993, 84282, 91614, 96137, 6137, 37186, 29678, 91017, 6799, 31975, 55148, 2087, 85752, 58430, 27435, 65033, 46721, 95344, 38584, 39893, 99855, 97921, 50916, 50082, 51594, 52219, 4847, 9625, 71117, 98122, 64731, 31947, 8469, 6699, 2227, 3818, 3664, 5446, 5385, 1692, 83385, 23144, 44417, 43159, 76484, 10770, 71724, 44780, 18893, 8555, 59704, 20146, 3255, 41730, 76570, 94723, 68976, 80326, 1501, 21797, 91013, 75983, 88800, 67026, 40747, 60296, 73690, 99404, 96700, 1506, 90806, 64716, 80130, 46268, 6053, 89868, 28905, 80176, 60309, 32766, 18691, 36027, 82811, 18548, 72393, 4336, 45877, 44269, 3163, 92428, 17563, 30911, 89262, 21619, 74429, 85249, 63730, 71936, 484, 43918, 94082, 15541, 92566, 79397, 2888, 3770, 40192, 23080, 67089, 22506, 82787, 52538, 83864, 34773, 65213, 41345, 84058, 16547, 96534, 9725, 261, 95350, 57706, 53973, 52334, 27359, 2194, 76003, 95049, 75156, 65664, 23095, 40123, 35037, 39254, 94757, 31316, 97519, 45871, 23050, 90864, 89, 27530, 51178, 12810, 42734, 57682, 28080, 66617, 9603, 40078, 26356, 32597, 80768, 12649, 69451, 10922, 90804, 4198, 91985, 84662, 45100, 46642, 73932, 50267, 31083, 72311, 69397, 48753, 73282, 80388, 73597, 55413, 13366, 20419, 4353, 84834, 98809, 52445, 48035, 22023, 37909, 41941, 58028, 52493, 89914, 28067, 95564, 70721, 29972, 44665, 42869, 48258, 5069, 34427, 68855, 10260, 70691, 48704, 31075, 47069, 68333, 18682, 6665, 81019, 35051, 2497, 49462, 1278, 86779, 46857, 73994, 83128, 3597, 63871, 52436, 94062, 94797, 56000, 3919, 52147, 79632, 10247, 1714, 69001, 30000, 19814, 52970, 61441, 77228, 38459, 52242, 580, 45900, 15838, 76733, 68201, 56825, 85070, 10137, 39888, 15830, 8451, 16677, 49584, 47231, 15269, 36893, 56889, 33568, 5089, 42769, 45562, 77333, 92198, 88437, 68049, 99823, 10470, 94748, 15990, 58595, 7390, 16541, 42795, 65373, 7416, 64496, 47789, 48206, 27882, 35830, 11051, 29155, 39695, 85038, 73809, 89890, 7751, 98753, 65792, 41296, 78053, 55493, 71016, 2773, 65112, 65594, 32508, 5798, 59593, 21560]
+Output:      99855
+
+Working Solution:
+
+var play = a => Math.max(...a)
+
+--------
+
+2: Pluck
+
+Title:       Pluck
+Description: Your play function will be called with an array of objects, each which has a 'price' property. Return a new array containing the values of the 'price' properties from each object.
+Input:       [{"price":100},{"price":200},{"price":9050},{"price":3},{"price":25000},{"price":50},{"price":64},{"price":999},{"price":1000}]
+Output:      [100,200,9050,3,25000,50,64,999,1000]
+
+Working Solution:
+
+var play = x => x.map(k => k.price)
+
+3: Pluck Sum
+
+Title:       Pluck Sum
+Description: Your play function will be called with an array of objects, each which has a 'price' property. Return the sum of all the 'price' property values.
+Input:       [{"price":110},{"price":200},{"price":9050},{"price":3},{"price":25050},{"price":50},{"price":164},{"price":999},{"price":1200}]
+Output:      36826
+
+Working Solution:
+
+var play = x => x.map(k => k.price).reduce((t,v) => t+v, 0)
+
+--------
+
+4: Deduplication
+
+Title:       Deduplication
+Description: Your play function will be called with an array of numbers. Return a new array with duplicates removed, maintaining the original order. Oh, but we like duplicates that are Fibonacci numbers, so don't remove them.
+Input:       [350, 10, 8808, 2584, 6454, 9911, 17711, 4754, 3835, 4481, 17711, 210, 25000, 1, 4481, 12, 6454, 4481, 4754, 1]
+Output:      [350, 10, 8808, 2584, 6454, 9911, 17711, 4754, 3835, 4481, 17711, 210, 25000, 1, 12, 1]
+
+Working Solution:
+
+const fibs = [0, 1 ,2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765, 10946, 17711];
+
+var play = function(nums) {
+  var arr = [];
+
+  nums.forEach(n => {
+    if (fibs.indexOf(n) !== -1) {
+      arr.push(n);
+      return;
+    }
+
+    if (arr.indexOf(n) === -1) {
+      arr.push(n);
+    }
+  });
+
+  return arr;
+};
+
+--------
+
+5: Never Gonna Give You Up
+
+Title:       Never Gonna Give You Up
+Description: Write the shortest program that returns the entire lyrics of "Never Gonna Give You Up" by Rick Astley. Your output must match exactly the format here: http://pastebin.com/raw.php?i=wwvdjvEj. By the way, your play function will be passed the string "Never gonna", just in case you need it :)
+Input:       "Never gonna"
+Output:      "We're no strangers to love\nYou know the rules and so do I\nA full commitment's what I'm thinking of\nYou wouldn't get this from any other guy\nI just wanna tell you how I'm feeling\nGotta make you understand\n\nNever gonna give you up\nNever gonna let you down\nNever gonna run around and desert you\nNever gonna make you cry\nNever gonna say goodbye\nNever gonna tell a lie and hurt you\n\nWe've known each other for so long\nYour heart's been aching but\nYou're too shy to say it\nInside we both know what's been going on\nWe know the game and we're gonna play it\nAnd if you ask me how I'm feeling\nDon't tell me you're too blind to see\n\nNever gonna give you up\nNever gonna let you down\nNever gonna run around and desert you\nNever gonna make you cry\nNever gonna say goodbye\nNever gonna tell a lie and hurt you\n\nNever gonna give you up\nNever gonna let you down\nNever gonna run around and desert you\nNever gonna make you cry\nNever gonna say goodbye\nNever gonna tell a lie and hurt you\n\n(Ooh, give you up)\n(Ooh, give you up)\n(Ooh)\nNever gonna give, never gonna give\n(Give you up)\n(Ooh)\nNever gonna give, never gonna give\n(Give you up)\n\nWe've know each other for so long\nYour heart's been aching but\nYou're too shy to say it\nInside we both know what's been going on\nWe know the game and we're gonna play it\n\nI just wanna tell you how I'm feeling\nGotta make you understand\n\nNever gonna give you up\nNever gonna let you down\nNever gonna run around and desert you\nNever gonna make you cry\nNever gonna say goodbye\nNever gonna tell a lie and hurt you\n\nNever gonna give you up\nNever gonna let you down\nNever gonna run around and desert you\nNever gonna make you cry\nNever gonna say goodbye\nNever gonna tell a lie and hurt you\n\nNever gonna give you up\nNever gonna let you down\nNever gonna run around and desert you\nNever gonna make you cry\nNever gonna say goodbye\nNever gonna tell a lie and hurt you"
+
+Working Solution:
+
+var play = function() {
+  return "We're no strangers to love\nYou know the rules and so do I\nA full commitment's what I'm thinking of\nYou wouldn't get this from any other guy\nI just wanna tell you how I'm feeling\nGotta make you understand\n\nNever gonna give you up\nNever gonna let you down\nNever gonna run around and desert you\nNever gonna make you cry\nNever gonna say goodbye\nNever gonna tell a lie and hurt you\n\nWe've known each other for so long\nYour heart's been aching but\nYou're too shy to say it\nInside we both know what's been going on\nWe know the game and we're gonna play it\nAnd if you ask me how I'm feeling\nDon't tell me you're too blind to see\n\nNever gonna give you up\nNever gonna let you down\nNever gonna run around and desert you\nNever gonna make you cry\nNever gonna say goodbye\nNever gonna tell a lie and hurt you\n\nNever gonna give you up\nNever gonna let you down\nNever gonna run around and desert you\nNever gonna make you cry\nNever gonna say goodbye\nNever gonna tell a lie and hurt you\n\n(Ooh, give you up)\n(Ooh, give you up)\n(Ooh)\nNever gonna give, never gonna give\n(Give you up)\n(Ooh)\nNever gonna give, never gonna give\n(Give you up)\n\nWe've know each other for so long\nYour heart's been aching but\nYou're too shy to say it\nInside we both know what's been going on\nWe know the game and we're gonna play it\n\nI just wanna tell you how I'm feeling\nGotta make you understand\n\nNever gonna give you up\nNever gonna let you down\nNever gonna run around and desert you\nNever gonna make you cry\nNever gonna say goodbye\nNever gonna tell a lie and hurt you\n\nNever gonna give you up\nNever gonna let you down\nNever gonna run around and desert you\nNever gonna make you cry\nNever gonna say goodbye\nNever gonna tell a lie and hurt you\n\nNever gonna give you up\nNever gonna let you down\nNever gonna run around and desert you\nNever gonna make you cry\nNever gonna say goodbye\nNever gonna tell a lie and hurt you"
+}
+
+--------
+
+6: ASCII Art
+
+Title:       ASCII Art
+Description: Your play function will be called with no input. Generate the following ASCII art and return it as a string, exactly as shown here: http://pastebin.com/raw.php?i=YsPK5Vdm
+Input:       ---
+Output:      "................................................................\n................................................................\n................................................................\n................................................................\n................................................................\n................................................................\n................................................................\n................................................................\n........################################################........\n........#..............................................#........\n........#..............................................#........\n........#..............................................#........\n........#...################........################...#........\n........#...#..............#........#..............#...#........\n........#...#..............#........#..............#...#........\n........#...#..............#........#..............#...#........\n........#...#..............#........#..............#...#........\n........#...#..............#........#..............#...#........\n........#...#..............#........#..............#...#........\n........#...#..............#........#..............#...#........\n........#...#..............#........#..............#...#........\n........#...#..............#........#..............#...#........\n........#...#..............#........#..............#...#........\n........#...#..............#........#..............#...#........\n........#...#..............#........#..............#...#........\n........#...#..............#........#..............#...#........\n........#...#..............#........#..............#...#........\n........#...################........################...#........\n........#..............................................#........\n........#..............................................#........\n........#..............................................#........\n........#..............................................#........\n........#..............................................#........\n........#..............................................#........\n........#..............................................#........\n........#..............................................#........\n........#..............................................#........\n........#..............................................#........\n........#..............................................#........\n........#..............................................#........\n........#...########################################...#........\n........#...#......................................#...#........\n........#...#......................................#...#........\n........#...#......................................#...#........\n........#...#......................................#...#........\n........#...#......................................#...#........\n........#...#......................................#...#........\n........#...#......................................#...#........\n........#...#......................................#...#........\n........#...#......................................#...#........\n........#...#......................................#...#........\n........#...########################################...#........\n........#..............................................#........\n........#..............................................#........\n........#..............................................#........\n........################################################........\n................................................................\n................................................................\n................................................................\n................................................................\n................................................................\n................................................................\n................................................................\n................................................................"
+
+Working Solution:
+
+const WIDTH = 64;
+const HEIGHT = 64;
+
+const grid = new Array(HEIGHT);
+
+const init = () => {
+  for (let y = 0; y < HEIGHT; y += 1) {
+    grid[y] = new Array(WIDTH);
+
+    for (let x = 0; x < WIDTH; x += 1) {
+      grid[y][x] = '.';
+    }
+  }
+};
+
+const output = () => {
+  let str = '';
+
+  for (let y = 0; y < HEIGHT; y += 1) {
+    const row = grid[y];
+
+    for (let x = 0; x < WIDTH; x += 1) {
+      str += row[x];
+    }
+
+    str += '\n';
+  }
+
+  return str.substring(0, str.length - 1);
+};
+
+const rect = (x, y, w, h) => {
+  for (let xi = x; xi < x + w; xi += 1) {
+    grid[y][xi] = '#';
+
+    grid[y + h - 1][xi] = '#';
+  }
+
+  for (let yi = y; yi < y + h; yi += 1) {
+    grid[yi][x] = '#';
+    grid[yi][x + w - 1] = '#';
+  }
+};
+
+var play = () => {
+  init();
+
+  rect(8, 8, 48, 48);
+  rect(12, 12, 16, 16);
+  rect(36, 12, 16, 16);
+  rect(12, 40, 40, 12);
+
+  return output();
+};

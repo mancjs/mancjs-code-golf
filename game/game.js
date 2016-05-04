@@ -56,8 +56,16 @@ var addEntry = function(data) {
     }
   };
 
+  var isValidInput = function(input) {
+    return !!input.match(/^[a-zA-Z0-9_@ .]*$/);
+  };
+
   if (!game.running) {
     return { err: 'Game is not running' };
+  }
+
+  if (!isValidInput(data.email) || !isValidInput(data.team)) {
+    return { err: 'Email and team name must match: /^[a-zA-Z0-9_@ .]*$/' };
   }
 
   var entry = _.findWhere(game.entries, { email: data.email });
