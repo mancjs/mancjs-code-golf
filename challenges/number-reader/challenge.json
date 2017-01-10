@@ -1,0 +1,6 @@
+{
+  "title": "Number Reader",
+  "input": 77209536,
+  "output": "seven seven two zero nine five three six",
+  "description": "Write a program that takes a number and converts it to the equivalant string, i.e. 12341 -> \"one two three four one\""
+}
