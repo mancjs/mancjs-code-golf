@@ -1,0 +1,6 @@
+{
+  "title": "ES6 Arabic to Roman",
+  "input": 1986,
+  "output": "MCMLXXXVI",
+  "description": "Make a function that takes in arabic numbers and gives you roman ones, i.e. 23 => \"XXIII\""
+}
