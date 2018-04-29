@@ -1,20 +1,26 @@
-// @flow
+import fs = require('fs');
+import path = require('path');
 
-const fs = require('fs');
-const path = require('path');
+interface Challenge {
+  key: string;
+  title: string;
+  input: string;
+  output: string;
+  description: string;
+}
 
-const challengesDir = path.join(__dirname, '..', 'challenges');
+const challengesDir = path.join(__dirname, '..', '..', 'challenges');
 
-let _challenges;
+let challenges: Challenge[] | undefined;
 
-const validChallenge = (folder) => {
+const validChallenge = (folder: string) => {
   const folderPath = path.join(challengesDir, folder);
   const challengeJsonPath = path.join(folderPath, 'challenge.json');
 
   return fs.existsSync(challengeJsonPath);
 };
 
-const readChallenge = (folder) => {
+const readChallenge = (folder: string): Challenge => {
   const folderPath = path.join(challengesDir, folder);
   const challengeJsonPath = path.join(folderPath, 'challenge.json');
 
@@ -25,7 +31,7 @@ const readChallenge = (folder) => {
     title: challengeJson.title,
     input: JSON.stringify(challengeJson.input),
     output: JSON.stringify(challengeJson.output),
-    description: challengeJson.description
+    description: challengeJson.description,
   };
 };
 
@@ -36,12 +42,12 @@ const loadChallenges = () => {
 };
 
 const getChallenges = () => {
-  if (_challenges) return _challenges;
+  if (challenges) return challenges;
 
-  return _challenges = loadChallenges();
+  return challenges = loadChallenges();
 };
 
-const getChallenge = (key /*:string*/) => {
+const getChallenge = (key: string) => {
   const challenges = getChallenges();
 
   const matches = challenges.filter(c => c.key === key);
@@ -49,7 +55,7 @@ const getChallenge = (key /*:string*/) => {
   return matches.length > 0 ? matches[0] : null;
 };
 
-module.exports = {
+export {
   getChallenges,
-  getChallenge
+  getChallenge,
 };
