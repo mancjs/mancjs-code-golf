@@ -4,8 +4,8 @@ The server used to run the MancJS code golf game.
 ### How to run server
 
 * Clone the repo
-* `npm install`
-* `node mancjs-golf`
+* `yarn`
+* `yarn start`
 
 ### URLs
 
