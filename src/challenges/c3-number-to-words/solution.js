@@ -42,12 +42,3 @@ function play(num) {
 if (typeof module !== 'undefined') {
   module.exports = play;
 }
-
-if (typeof console !== 'undefined') {
-  const test = (input) => console.log(input, play(input));
-
-  test(2);
-  test(301);
-  test(12341);
-  test(1290489);
-}

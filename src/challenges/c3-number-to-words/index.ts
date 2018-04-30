@@ -7,7 +7,6 @@ const challenge: Challenge = {
   input,
   title: 'Number To Words',
   output: solution(input),
-  // tslint:disable-next-line:max-line-length
   description: `
 Write a program that takes a number and converts it to spoken words, i.e.
 2       -> "two"

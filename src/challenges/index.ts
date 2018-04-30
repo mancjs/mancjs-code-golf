@@ -3,6 +3,7 @@ import c2SortTheNumbers = require('./c2-sort-the-numbers');
 import c3NumberToWords = require('./c3-number-to-words');
 import c4ArabicRoman = require('./c4-arabic-roman');
 import c5Add = require('./c5-add');
+import c6BinaryTree = require('./c6-binary-tree');
 
 interface Challenges {
   [key: string]: Challenge;
@@ -16,7 +17,7 @@ interface Challenge {
   rules?: Rule[];
 }
 
-type PrimativeValue = string | number;
+type PrimativeValue = string | number | object;
 type Primative = PrimativeValue | PrimativeValue[];
 
 type Rule = 'no-sort' | 'no-add' | 'no-eval';
@@ -27,6 +28,7 @@ const challenges: Challenges = {
   'c3-number-to-words': c3NumberToWords,
   'c4-arabic-roman': c4ArabicRoman,
   'c5-add': c5Add,
+  'c6-binary-tree': c6BinaryTree,
 };
 
 export {
