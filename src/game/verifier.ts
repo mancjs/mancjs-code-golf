@@ -41,9 +41,13 @@ process.on('message', (entry: VerifyJob) => {
   };
 
   try {
-    let script = fs.readFileSync(entry.file, 'utf8');
-    script = 'Array.prototype.sort = function() { throw true; }; ' + script;
-    vm.runInNewContext(script, global);
+    const script = fs.readFileSync(entry.file, 'utf8');
+
+    let header = '';
+    header += '"use strict";\n';
+    header += 'Array.prototype.sort = function() { throw true; };\n';
+
+    vm.runInNewContext(header + script, global);
 
     if (!global.play) {
       return process.send && process.send({ valid: false, err: 'No global play function defined' });
