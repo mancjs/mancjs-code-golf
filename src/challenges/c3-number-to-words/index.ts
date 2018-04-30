@@ -1,12 +1,12 @@
 import { Challenge } from '..';
-const play = require('./solution');
+import solution from './solution';
 
 const input = 743243892;
 
 const challenge: Challenge = {
   input,
   title: 'Number To Words',
-  output: play(input),
+  output: solution(input),
   // tslint:disable-next-line:max-line-length
   description: `
 Write a program that takes a number and converts it to spoken words, i.e.
