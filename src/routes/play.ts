@@ -38,6 +38,7 @@ app.get('/', (req, res) => {
     entries: allEntries,
     err: req.query.err,
     autoreload: req.query.autoreload === 'true',
+    showaddentry: req.param('autoreload') !== 'true',
   });
 });
 
