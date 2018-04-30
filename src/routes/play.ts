@@ -5,6 +5,7 @@ import multiparty = require('multiparty');
 import game = require('../game/game');
 import { Game, Entry } from '../game/game';
 import gameVerifier = require('../game/game-verifier');
+import { challenges } from '../challenges';
 
 const app = express();
 
@@ -28,8 +29,11 @@ app.get('/', (req, res) => {
 
   const allEntries = validEntries.concat(invalidEntries);
 
+  const challenge = challenges[currentGame.key];
+
   return res.render('play', {
     session,
+    challenge,
     game: currentGame,
     entries: allEntries,
     err: req.query.err,

@@ -46,10 +46,10 @@
           <input type="hidden" name="key" id="key" value="{{game.key}}" />
 
           <label for="title">Title <span>(new title starts a new game)</span></label>
-          <input type="text" name="title" id="title" value="{{game.title}}" />
+          <input type="text" name="title" id="title" value="{{game.title}}" readonly="readonly" />
 
           <label for="description">Description</label>
-          <textarea name="description" id="description" rows="2">{{game.description}}</textarea>
+          <textarea name="description" id="description" rows="2" readonly="readonly">{{game.description}}</textarea>
 
           {{#game.entries.length}}
           <label>Entries</label>
