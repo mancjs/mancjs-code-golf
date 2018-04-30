@@ -1,6 +1,8 @@
 import fs = require('fs');
+import path = require('path');
 import crypto = require('crypto');
 import lodash = require('lodash');
+import { challenges } from '../challenges';
 
 interface GameStart {
   key: string;
@@ -29,9 +31,9 @@ interface Entry extends AddEntryRequest {
 const jsmin = require('jsmin').jsmin;
 
 let game: Game | undefined;
-const savePath = __dirname + '/data/game.json';
+const savePath = path.join(__dirname, '..', '..', 'data', 'game.json');
 
-const start = function (data: GameStart) {
+const start = (data: GameStart) => {
   if (game && game.key === data.key) {
     game.running = true;
     return save();
@@ -46,7 +48,7 @@ const start = function (data: GameStart) {
   return save();
 };
 
-const stop = function () {
+const stop = () => {
   if (game) {
     game.running = false;
   }
@@ -54,27 +56,31 @@ const stop = function () {
   return save();
 };
 
-const get = function () {
+const get = () => {
   return game;
 };
 
-const getOrError = function () {
+const getCurrentChallenge = () => {
+  return game ? challenges[game.key] : null;
+};
+
+const getOrError = () => {
   if (!game) throw new Error('No game');
 
   return game;
 };
 
-const addEntry = function (data: AddEntryRequest): { entry?: Partial<Entry>, err?: string } {
-  const createKey = function () {
+const addEntry = (data: AddEntryRequest): { entry?: Partial<Entry>, err?: string } => {
+  const createKey = () => {
     return (Math.round(Math.random() * 100000000000)).toString(36);
   };
 
-  const getGravatarUrl = function (email: string) {
+  const getGravatarUrl = (email: string) => {
     const hash = crypto.createHash('md5').update(email).digest('hex');
     return 'http://www.gravatar.com/avatar/' + hash + '?s=130&d=wavatar';
   };
 
-  const countStrokes = function (file: string) {
+  const countStrokes = (file: string) => {
     if (fs.existsSync(file)) {
       const contents = jsmin(fs.readFileSync(file, 'utf8'), 3).replace(/^\n+/, '');
       return contents.length;
@@ -123,7 +129,7 @@ const addEntry = function (data: AddEntryRequest): { entry?: Partial<Entry>, err
   return { err: 'Unknown error' };
 };
 
-const setValid = function (key: string, valid: boolean) {
+const setValid = (key: string, valid: boolean) => {
   if (!game) return;
 
   const entry = lodash.find(game.entries, { key });
@@ -134,11 +140,11 @@ const setValid = function (key: string, valid: boolean) {
   }
 };
 
-const save = function () {
+const save = () => {
   return fs.writeFileSync(savePath, JSON.stringify(game));
 };
 
-const load = function () {
+const load = () => {
   if (fs.existsSync(savePath)) {
     game = JSON.parse(fs.readFileSync(savePath, 'utf8'));
   }
@@ -154,5 +160,6 @@ export {
   start,
   stop,
   get,
+  getCurrentChallenge,
   getOrError,
 };

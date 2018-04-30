@@ -30,7 +30,7 @@
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu" aria-labelledby="challengeMenu">
-            {{#challenges}}
+            {{#challengeList}}
             <li>
               <a href="javascript:void(0)"
                  class="challenge-link"
@@ -38,7 +38,7 @@
                 {{title}}
               </a>
             </li>
-            {{/challenges}}
+            {{/challengeList}}
           </ul>
         </div>
 
@@ -46,10 +46,10 @@
           <input type="hidden" name="key" id="key" value="{{game.key}}" />
 
           <label for="title">Title <span>(new title starts a new game)</span></label>
-          <input type="text" name="title" id="title" value="{{game.title}}" readonly="readonly" />
+          <input type="text" name="title" id="title" value="{{challenge.title}}" readonly="readonly" />
 
           <label for="description">Description</label>
-          <textarea name="description" id="description" rows="5" readonly="readonly">{{game.description}}</textarea>
+          <textarea name="description" id="description" rows="5" readonly="readonly">{{challenge.description}}</textarea>
 
           {{#game.entries.length}}
           <label>Entries</label>

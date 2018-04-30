@@ -1,8 +1,7 @@
 import express = require('express');
 import expressBasicAuth = require('express-basic-auth');
 import game = require('../game/game');
-
-const challengeLibrary = require('../game/challenge-library');
+import challengeLibrary = require('../game/challenge-library');
 
 const app = express();
 
@@ -13,13 +12,17 @@ const authorizer = (username: string, password: string) => {
 app.use(expressBasicAuth({ authorizer, challenge: true }));
 
 app.get('/admin', (req, res) => {
-  const challenges = challengeLibrary.getChallenges();
+  const challengeList = challengeLibrary.getChallenges();
 
-  const gameData = JSON.stringify(game.get(), undefined, 2);
+  const gameState = game.get();
+  const challenge = game.getCurrentChallenge();
+
+  const gameData = JSON.stringify(gameState, undefined, 2);
 
   return res.render('admin', {
     gameData,
-    challenges,
+    challenge,
+    challengeList,
     game: game.get(),
   });
 });

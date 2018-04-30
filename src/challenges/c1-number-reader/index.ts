@@ -1,13 +1,5 @@
 import { Challenge } from '..';
-
-const solution = (n: number) => {
-  const a = [];
-  const ns = n + '';
-  for (let i = 0; i < ns.length; i += 1) {
-    a.push(['zero', 0, 'two', 'three', 0, 'five', 'six', 'seven', 0, 'nine'][parseInt(ns[i], 10)]);
-  }
-  return a.join(' ');
-};
+import solution from './solution';
 
 const input = 77209536;
 
