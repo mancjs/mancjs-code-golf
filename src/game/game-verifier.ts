@@ -15,6 +15,7 @@ const verify = (file: string, callback: (res: { valid: false, err: string }) => 
     file,
     input: challenge.input,
     output: challenge.output,
+    rules: challenge.rules || [],
   };
 
   verifier.send(job);

@@ -1,4 +1,4 @@
-import { Challenge } from '.';
+import { Challenge } from '..';
 
 const solution = (n: number) => {
   const a = [];

@@ -1,15 +1,16 @@
 import fs = require('fs');
 import vm = require('vm');
 import lodash = require('lodash');
-import { Primative } from '../challenges';
+import { Primative, Rule } from '../challenges';
 
 interface VerifyJob {
   file: string;
   input: Primative;
   output: Primative;
+  rules: Rule[];
 }
 
-const global = {} as { play?: Function };
+const global = {} as { play?: Function, eval?: undefined };
 
 const formatTypeAndValue = (value: any, actual: any) => {
   const getType = function (value: any) {
@@ -40,12 +41,36 @@ process.on('message', (entry: VerifyJob) => {
     });
   };
 
+  const generalError = function (err: string) {
+    return process.send && process.send({
+      err,
+      valid: false,
+    });
+  };
+
   try {
     const script = fs.readFileSync(entry.file, 'utf8');
 
     let header = '';
     header += '"use strict";\n';
-    header += 'Array.prototype.sort = function() { throw true; };\n';
+
+    if (entry.rules.indexOf('no-sort') !== -1) {
+      header += 'Array.prototype.sort = function() { throw true; };\n';
+    }
+
+    if (entry.rules.indexOf('no-add') !== -1) {
+      if (script.indexOf('+') !== -1) {
+        return generalError('The plus operator is forbidden');
+      }
+    }
+
+    if (entry.rules.indexOf('no-eval') !== -1) {
+      global.eval = undefined;
+
+      if (script.indexOf('eval') !== -1) {
+        return generalError('Nice try but I\'m not letting you use eval...');
+      }
+    }
 
     vm.runInNewContext(header + script, global);
 

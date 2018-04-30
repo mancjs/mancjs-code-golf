@@ -1,4 +1,4 @@
-import { Challenge } from '.';
+import { Challenge } from '..';
 
 const solution = (n: number[]) => {
   const a = [];
@@ -35,6 +35,7 @@ const challenge: Challenge = {
   output: solution(input),
   // tslint:disable-next-line:max-line-length
   description: 'Sort the array of numbers passed to your play function in ascending order, returning a sorted array.',
+  rules: ['no-sort'],
 };
 
 export = challenge;

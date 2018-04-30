@@ -30,6 +30,10 @@ input[type='text'], textarea {
   width: 100%;
 }
 
+textarea {
+  font-family: monospace;
+}
+
 input[readonly] {
   opacity: 0.4;
 }
