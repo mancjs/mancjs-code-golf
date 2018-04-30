@@ -43,17 +43,13 @@
         </div>
 
         <form method="post" action="/start">
+          <input type="hidden" name="key" id="key" value="{{game.key}}" />
+
           <label for="title">Title <span>(new title starts a new game)</span></label>
           <input type="text" name="title" id="title" value="{{game.title}}" />
 
           <label for="description">Description</label>
           <textarea name="description" id="description" rows="2">{{game.description}}</textarea>
-
-          <label for="input">Input <span>(data passed to the <code>play</code> function)</span></label>
-          <input type="text" name="input" id="input" value="{{game.input}}" />
-
-          <label for="output">Expected output <span>(data received from the <code>play</code> function, supports string, number and array)</span></label>
-          <input type="text" name="output" id="output" value="{{game.output}}" />
 
           {{#game.entries.length}}
           <label>Entries</label>

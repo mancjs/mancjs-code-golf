@@ -14,7 +14,7 @@ app.set('views', path.join(__dirname, '..', 'views'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-play(app);
-admin(app);
+app.use(play);
+app.use(admin);
 
 app.listen(1122);

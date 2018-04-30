@@ -3,17 +3,11 @@ import crypto = require('crypto');
 import lodash = require('lodash');
 
 interface GameStart {
-  title: string;
-  description: string;
-  input: string;
-  output: string;
+  key: string;
 }
 
 interface Game {
-  title: string;
-  description: string;
-  input: string;
-  output: string;
+  key: string;
   running: boolean;
   entries: Entry[];
 }
@@ -38,19 +32,13 @@ let game: Game | undefined;
 const savePath = __dirname + '/data/game.json';
 
 const start = function (data: GameStart) {
-  if (game && game.title === data.title) {
-    game.description = data.description;
-    game.input = data.input;
-    game.output = data.output;
+  if (game && game.key === data.key) {
     game.running = true;
     return save();
   }
 
   game = {
-    title: data.title,
-    description: data.description,
-    input: data.input,
-    output: data.output,
+    key: data.key,
     running: true,
     entries: [],
   };

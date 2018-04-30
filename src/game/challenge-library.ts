@@ -1,58 +1,28 @@
 import fs = require('fs');
 import path = require('path');
+import { challenges } from '../challenges';
 
-interface Challenge {
+interface ChallengeMeta {
   key: string;
   title: string;
-  input: string;
-  output: string;
-  description: string;
 }
 
-const challengesDir = path.join(__dirname, '..', '..', 'challenges');
-
-let challenges: Challenge[] | undefined;
-
-const validChallenge = (folder: string) => {
-  const folderPath = path.join(challengesDir, folder);
-  const challengeJsonPath = path.join(folderPath, 'challenge.json');
-
-  return fs.existsSync(challengeJsonPath);
-};
-
-const readChallenge = (folder: string): Challenge => {
-  const folderPath = path.join(challengesDir, folder);
-  const challengeJsonPath = path.join(folderPath, 'challenge.json');
-
-  const challengeJson = JSON.parse(fs.readFileSync(challengeJsonPath, 'utf8'));
-
-  return {
-    key: folder,
-    title: challengeJson.title,
-    input: JSON.stringify(challengeJson.input),
-    output: JSON.stringify(challengeJson.output),
-    description: challengeJson.description,
-  };
-};
-
-const loadChallenges = () => {
-  const folders = fs.readdirSync(challengesDir);
-
-  return folders.filter(validChallenge).map(readChallenge);
-};
-
 const getChallenges = () => {
-  if (challenges) return challenges;
+  const keys = Object.keys(challenges);
 
-  return challenges = loadChallenges();
+  return keys.map((key) => {
+    const { title, description } = challenges[key];
+
+    return {
+      key,
+      title,
+      description,
+    };
+  });
 };
 
 const getChallenge = (key: string) => {
-  const challenges = getChallenges();
-
-  const matches = challenges.filter(c => c.key === key);
-
-  return matches.length > 0 ? matches[0] : null;
+  return challenges[key];
 };
 
 export {

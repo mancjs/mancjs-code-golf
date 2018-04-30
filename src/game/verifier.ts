@@ -1,6 +1,13 @@
 import fs = require('fs');
 import vm = require('vm');
 import lodash = require('lodash');
+import { Primative } from '../challenges';
+
+interface VerifyJob {
+  file: string;
+  input: Primative;
+  output: Primative;
+}
 
 const global = {} as { play?: Function };
 
@@ -22,7 +29,7 @@ const formatTypeAndValue = (value: any, actual: any) => {
   return digits + ' digit number';
 };
 
-process.on('message', (entry: { file: string, input: any, output: any }) => {
+process.on('message', (entry: VerifyJob) => {
   const error = function (expected: any, actual: any) {
     const expectedError = formatTypeAndValue(expected, false);
     const actualError = formatTypeAndValue(actual, true);
@@ -34,8 +41,6 @@ process.on('message', (entry: { file: string, input: any, output: any }) => {
   };
 
   try {
-    console.log('entry', entry);
-
     let script = fs.readFileSync(entry.file, 'utf8');
     script = 'Array.prototype.sort = function() { throw true; }; ' + script;
     vm.runInNewContext(script, global);
@@ -44,10 +49,8 @@ process.on('message', (entry: { file: string, input: any, output: any }) => {
       return process.send && process.send({ valid: false, err: 'No global play function defined' });
     }
 
-    // tslint:disable-next-line:no-eval
-    const actualOutput = global.play(eval(entry.input));
-    // tslint:disable-next-line:no-eval
-    const expectedOutput = eval(entry.output);
+    const actualOutput = global.play(entry.input);
+    const expectedOutput = entry.output;
 
     if (lodash.isArray(actualOutput) && lodash.isArray(expectedOutput)) {
       if (actualOutput.toString() !== expectedOutput.toString()) {
@@ -64,3 +67,7 @@ process.on('message', (entry: { file: string, input: any, output: any }) => {
     process.send && process.send({ valid: false, err: 'Your script is broken' });
   }
 });
+
+export {
+  VerifyJob,
+};
