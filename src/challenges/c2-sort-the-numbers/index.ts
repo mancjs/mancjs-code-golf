@@ -23,7 +23,10 @@ const challenge: Challenge = {
   title: 'Sort The Numbers',
   output: solution(input),
   // tslint:disable-next-line:max-line-length
-  description: 'Sort the array of numbers passed to your play function in ascending order, returning a sorted array.',
+  description: `
+Sort the array of numbers passed to your play function in ascending order, returning a sorted array.
+[3, 2, 1] -> [1, 2, 3]
+`.trim(),
   rules: ['no-sort'],
 };
 
