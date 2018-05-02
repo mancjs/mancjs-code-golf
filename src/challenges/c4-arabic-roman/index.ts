@@ -1,7 +1,7 @@
 import { Challenge } from '..';
 import solution from './solution';
 
-const input = 2743;
+const input = 2476;
 
 const challenge: Challenge = {
   input,
