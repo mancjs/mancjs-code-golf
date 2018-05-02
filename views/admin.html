@@ -51,6 +51,13 @@
           <label for="description">Description</label>
           <textarea name="description" id="description" rows="5" readonly="readonly">{{challenge.description}}</textarea>
 
+          <label for="timeLimitMinutes">Time Limit (minutes)</label>
+          <input type="text" name="timeLimitMinutes" id="timeLimitMinutes" value="{{timeLimitMinutes}}" />
+
+          {{#game.running}}
+          <p>Enter a new time limit to extend the game</p>
+          {{/game.running}}
+
           {{#game.entries.length}}
           <label>Entries</label>
           <div>{{game.entries.length}}</div>

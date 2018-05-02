@@ -16,6 +16,10 @@
           <pre>{{challenge.description}}</pre>
         </div>
 
+        <div class="clock">
+          Time remaining: <span>{{clock}}</span>
+        </div>
+
         <div class="entries">
           {{#entries}}
 
@@ -101,6 +105,33 @@
           window.location = window.location;
         }, 3000);
       {{/autoreload}}
+
+      $('.clock span').each(function() {
+        var clock = $(this);
+
+        var parts = clock.text().trim().split(':');
+
+        if (parts.length !== 2) return;
+
+        var min = parseInt(parts[0], 10), sec = parseInt(parts[1], 10);
+
+        if (isNaN(min) || isNaN(sec)) return;
+
+        var timeRemaining = min * 60 + sec;
+
+        setInterval(function() {
+          if (timeRemaining <= 0) return;
+
+          timeRemaining -= 1;
+
+          var min = Math.floor(timeRemaining / 60).toString();
+          var sec = Math.floor(timeRemaining % 60).toString();
+
+          if (sec.length === 1) sec = '0' + sec;
+
+          clock.text([min, sec].join(':'));
+        }, 1000);
+      });
     });
 
   </script>

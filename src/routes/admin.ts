@@ -2,6 +2,9 @@ import express = require('express');
 import expressBasicAuth = require('express-basic-auth');
 import game = require('../game/game');
 import challengeLibrary = require('../game/challenge-library');
+import { GameStart } from '../game/game';
+
+const DEFAULT_TIME_LIMIT = 10;
 
 const app = express();
 
@@ -16,6 +19,9 @@ app.get('/admin', (req, res) => {
 
   const gameState = game.get();
   const challenge = game.getCurrentChallenge();
+  const timeRemaining = game.getTimeRemainingSeconds();
+
+  const timeLimitMinutes = timeRemaining ? undefined : DEFAULT_TIME_LIMIT;
 
   const gameData = JSON.stringify(gameState, undefined, 2);
 
@@ -23,13 +29,17 @@ app.get('/admin', (req, res) => {
     gameData,
     challenge,
     challengeList,
+    timeLimitMinutes,
     game: game.get(),
   });
 });
 
 app.post('/start', (req, res) => {
-  const data = {
+  const timeLimitMinutesString: string | undefined = req.body.timeLimitMinutes;
+
+  const data: GameStart = {
     key: req.body.key,
+    timeLimitMinutes: timeLimitMinutesString ? parseFloat(timeLimitMinutesString) : undefined,
   };
 
   game.start(data);

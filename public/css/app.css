@@ -38,6 +38,14 @@ input[readonly] {
   opacity: 0.4;
 }
 
+.clock {
+  font-size: 24px;
+}
+
+.clock span {
+  font-weight: bold;
+}
+
 .entries {
   overflow: hidden;
   margin-top: 20px;

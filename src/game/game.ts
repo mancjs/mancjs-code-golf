@@ -4,13 +4,17 @@ import crypto = require('crypto');
 import lodash = require('lodash');
 import { challenges } from '../challenges';
 
+const DEFAULT_TIME_LIMIT = 10;
+
 interface GameStart {
   key: string;
+  timeLimitMinutes?: number;
 }
 
 interface Game {
   key: string;
   running: boolean;
+  expiresEpoch: number;
   entries: Entry[];
 }
 
@@ -31,27 +35,64 @@ interface Entry extends AddEntryRequest {
 const jsmin = require('jsmin').jsmin;
 
 let game: Game | undefined;
+let expiresTimeout: NodeJS.Timer | undefined;
 const savePath = path.join(__dirname, '..', '..', 'data', 'game.json');
 
 const start = (data: GameStart) => {
+  const getNewExpires = (timeLimitMinutes: number) => {
+    return (Date.now() / 1000) + (timeLimitMinutes * 60);
+  };
+
+  if (data.timeLimitMinutes && isNaN(data.timeLimitMinutes)) {
+    throw new Error('Invalid time limit');
+  }
+
   if (game && game.key === data.key) {
     game.running = true;
+
+    if (data.timeLimitMinutes) {
+      game.expiresEpoch = getNewExpires(data.timeLimitMinutes);
+    }
+
     return save();
   }
+
+  const timeLimitMinutes = data.timeLimitMinutes || DEFAULT_TIME_LIMIT;
 
   game = {
     key: data.key,
     running: true,
+    expiresEpoch: getNewExpires(timeLimitMinutes),
     entries: [],
   };
 
   return save();
 };
 
+const applyCountdown = () => {
+  if (!game || !game.running) return;
+
+  clearCountdown();
+
+  const expiresAt = (game.expiresEpoch * 1000 - Date.now());
+
+  expiresTimeout = setTimeout(stop, expiresAt);
+};
+
+const clearCountdown = () => {
+  if (expiresTimeout) {
+    clearTimeout(expiresTimeout);
+
+    expiresTimeout = undefined;
+  }
+};
+
 const stop = () => {
   if (game) {
     game.running = false;
   }
+
+  clearCountdown();
 
   return save();
 };
@@ -68,6 +109,12 @@ const getOrError = () => {
   if (!game) throw new Error('No game');
 
   return game;
+};
+
+const getTimeRemainingSeconds = () => {
+  if (game && game.running) {
+    return (game.expiresEpoch - (Date.now() / 1000));
+  }
 };
 
 const addEntry = (data: AddEntryRequest): { entry?: Partial<Entry>, err?: string } => {
@@ -141,18 +188,23 @@ const setValid = (key: string, valid: boolean) => {
 };
 
 const save = () => {
+  applyCountdown();
+
   return fs.writeFileSync(savePath, JSON.stringify(game));
 };
 
 const load = () => {
   if (fs.existsSync(savePath)) {
     game = JSON.parse(fs.readFileSync(savePath, 'utf8'));
+
+    applyCountdown();
   }
 };
 
 load();
 
 export {
+  GameStart,
   Game,
   Entry,
   addEntry,
@@ -162,4 +214,5 @@ export {
   get,
   getCurrentChallenge,
   getOrError,
+  getTimeRemainingSeconds,
 };

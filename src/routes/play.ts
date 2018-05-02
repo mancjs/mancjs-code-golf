@@ -31,9 +31,23 @@ app.get('/', (req, res) => {
 
   const challenge = challenges[currentGame.key];
 
+  const timeRemaining = game.getTimeRemainingSeconds();
+
+  let clock: string | undefined;
+
+  if (timeRemaining && timeRemaining > 0) {
+    const min = Math.floor(timeRemaining / 60).toString();
+    const sec = Math.floor(timeRemaining % 60).toString().padStart(2, '0');
+
+    clock = [min, sec].join(':');
+  } else {
+    clock = '0:00';
+  }
+
   return res.render('play', {
     session,
     challenge,
+    clock,
     game: currentGame,
     entries: allEntries,
     err: req.query.err,
