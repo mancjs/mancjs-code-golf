@@ -14,7 +14,9 @@ const challenge: Challenge = {
   title: 'Binary Tree',
   output: solution(input),
   description: `
-Given a binary tree with nodes of { a: {...}, b: {...} }, count the total number of nodes.
+Given a binary tree where each node is a plain JavaScript object.
+Each object can optionally contain properties 'a' and 'b' pointing to child nodes. 
+Count the total number of NODES in the tree.
 {}                              => 1
 { a: {} }                       => 2
 { a: {}, b: { a: {}, b: {} } }  => 5
