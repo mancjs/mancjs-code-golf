@@ -8,8 +8,8 @@ const challenge: Challenge = {
   title: 'Prime Number Generator',
   output: solution(input),
   description: `
-Write a function which returns an array of primes starting from 2.
-The function will passed a number for the maximum number of primes to return.
+Write a function which returns an array of primes in numerical order starting from 2.
+The function will be passed the max for which the primes must be less than (not equal).
 `.trim(),
 };
 
