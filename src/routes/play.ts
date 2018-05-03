@@ -66,7 +66,7 @@ app.get('/solution/:key', (req, res) => {
   };
 
   const currentGame = game.getOrError();
-  const solution = getSolution(currentGame, req.query.key);
+  const solution = getSolution(currentGame, req.params.key);
 
   if (currentGame.running) {
     return res.send(403);
