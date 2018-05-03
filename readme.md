@@ -1,4 +1,4 @@
-## MancJS October: Code Golf
+## MancJS: Code Golf
 The server used to run the MancJS code golf game.
 
 ### How to run server
@@ -19,7 +19,7 @@ submissions and allow players to view other player submissions.
 
 The admin page is protected with HTTP basic auth (user `admin` pass `admin`). You can modify
 the credentials by changing the file
-[routes/admin.js](https://github.com/martinrue/mancjs-code-golf/blob/master/routes/admin.js#L5).
+[src/routes/admin.ts](https://github.com/martinrue/mancjs-code-golf/blob/master/src/routes/admin.ts#L12).
 
 ### Notes
 Changing the title of the game on the admin page and clicking *Start Game* will clear current
