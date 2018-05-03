@@ -4,6 +4,8 @@ import bodyParser = require('body-parser');
 import play = require('./routes/play');
 import admin = require('./routes/admin');
 
+const PORT = 1122;
+
 const mustachex = require('mustachex');
 
 const app = express();
@@ -17,4 +19,6 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 app.use(play);
 app.use(admin);
 
-app.listen(1122);
+app.listen(PORT);
+
+console.log(`CodeGolf server now running on http://localhost:${PORT}`);
