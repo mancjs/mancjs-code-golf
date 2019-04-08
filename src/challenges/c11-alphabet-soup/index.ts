@@ -2,7 +2,7 @@ import { Challenge } from '..';
 import solution from './solution';
 
 
-const input = "im a test string";
+const input = "imateststring";
 
 const challenge: Challenge = {
     input,
