@@ -99,7 +99,7 @@
 
   {{#game.running}}
   <script>
-    var initalAnswer = 'var play = function () {}';
+    var initalAnswer = 'var play = function (param) { return param }';
 
     var currentAnswer = $('#currentAnswer').text();
 
@@ -114,7 +114,6 @@
 
     function saveEditorValue() {
       var answer = editor.getValue()
-      console.log($('#answer')[0])
       $('#answer').val(answer)
     }
   </script>

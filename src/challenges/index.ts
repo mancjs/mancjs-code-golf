@@ -10,6 +10,8 @@ import c9LargestNumber = require('./c9-largest-number');
 import c10StringToArray = require('./c10-string-to-array');
 import c11AlphabetSoup = require('./c11-alphabet-soup');
 import c12TimeConvert = require('./c12-time-convert');
+import c13ZerosToTheEnd = require('./c13-zeros-to-the-end');
+import c14PowerOfThree = require('./c14-power-of-three');
 
 
 
@@ -25,7 +27,7 @@ interface Challenge {
   rules?: Rule[];
 }
 
-type PrimativeValue = string | number | object;
+type PrimativeValue = string | number | object | boolean;
 type Primative = PrimativeValue | PrimativeValue[];
 
 type Rule = 'no-sort' | 'no-add' | 'no-eval';
@@ -43,6 +45,8 @@ const challenges: Challenges = {
   'c10-string-to-array': c10StringToArray,
   'c11-alphabet-soup': c11AlphabetSoup,
   'c12-time-convert': c12TimeConvert,
+  'c13-zeros-to-the-end': c13ZerosToTheEnd,
+  'c14-power-of-three': c14PowerOfThree,
 };
 
 export {
