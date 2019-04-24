@@ -21,7 +21,7 @@ interface Game {
 interface AddEntryRequest {
   email: string;
   team: string;
-  file: string;
+  answer: string;
   key: string;
 }
 
@@ -118,19 +118,26 @@ const getTimeRemainingSeconds = () => {
 };
 
 const addEntry = (data: AddEntryRequest): { entry?: Partial<Entry>, err?: string } => {
+
+  console.log(data);
+
   const createKey = () => {
     return (Math.round(Math.random() * 100000000000)).toString(36);
   };
 
   const getGravatarUrl = (email: string) => {
     const hash = crypto.createHash('md5').update(email).digest('hex');
-    return 'http://www.gravatar.com/avatar/' + hash + '?s=130&d=wavatar';
+    return `http://www.gravatar.com/avatar/${hash}'?s=130&d=wavatar`;
   };
 
-  const countStrokes = (file: string) => {
-    if (fs.existsSync(file)) {
-      const contents = jsmin(fs.readFileSync(file, 'utf8'), 3).replace(/^\n+/, '');
-      return contents.length;
+  const countStrokes = (answer: string) => {
+    if (answer) {
+      try {
+        const contents = jsmin(answer, 3).replace(/^\n+/, '');
+        return contents.length;
+      } catch (e) {
+        return { err: 'error counting strokes'};
+      }
     }
   };
 
@@ -147,28 +154,37 @@ const addEntry = (data: AddEntryRequest): { entry?: Partial<Entry>, err?: string
   if (!entry) {
     if (!data.email) return { err: 'Enter an email address' };
     if (!data.team) return { err: 'Enter a team name' };
-    if (!data.file) return { err: 'No file was selected' };
+    if (!data.answer) return { err: 'No answer was input' };
 
-    entry = {
-      email: data.email,
-      gravatar: getGravatarUrl(data.email),
-      team: data.team,
-      file: data.file,
-      key: createKey(),
-      strokes: countStrokes(data.file),
-      updated: new Date(),
-      valid: false,
-    };
+    try {
+      const strokes = countStrokes(data.answer);
+      if (strokes.err) {
+        return strokes;
+      }
 
-    game.entries.push(entry);
-    save();
-    return { entry };
+      entry = {
+        email: data.email,
+        gravatar: getGravatarUrl(data.email),
+        team: data.team,
+        answer: data.answer,
+        key: createKey(),
+        strokes: strokes,
+        updated: new Date(),
+        valid: false,
+      };
+
+      game.entries.push(entry);
+      save();
+      return { entry };
+    } catch (e) {
+      return { err: e.message };
+    }
   }
 
   if (entry && entry.key === data.key) {
     entry.updated = new Date;
-    entry.file = data.file;
-    entry.strokes = countStrokes(data.file);
+    entry.answer = data.answer;
+    entry.strokes = countStrokes(data.answer);
     save();
     return { entry };
   }

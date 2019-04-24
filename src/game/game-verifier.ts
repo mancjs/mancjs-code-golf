@@ -3,7 +3,7 @@ import game = require('./game');
 import { VerifyJob } from './verifier';
 import { getChallenge } from './challenge-library';
 
-const verify = (file: string, callback: (res: { valid: false, err: string }) => void) => {
+const verify = (answer: string, callback: (res: { valid: false, err: string }) => void) => {
   const currentGame = game.getOrError();
   const verifier = child_process.fork(__dirname + '/verifier');
 
@@ -12,7 +12,7 @@ const verify = (file: string, callback: (res: { valid: false, err: string }) => 
   if (!challenge) throw new Error('Challenge not found');
 
   const job: VerifyJob = {
-    file,
+    answer,
     input: challenge.input,
     output: challenge.output,
     rules: challenge.rules || [],

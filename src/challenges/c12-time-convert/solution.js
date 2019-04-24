@@ -1,1 +1,5 @@
-var play=n=>Math.floor(n/60)+':'+n%60
+function play(n){ return Math.floor(n/60)+':'+n%60}
+
+if (typeof module !== 'undefined') {
+    module.exports = play;
+}

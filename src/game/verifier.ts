@@ -4,7 +4,7 @@ import lodash = require('lodash');
 import { Primative, Rule } from '../challenges';
 
 interface VerifyJob {
-  file: string;
+  answer: string;
   input: Primative;
   output: Primative;
   rules: Rule[];
@@ -49,7 +49,7 @@ process.on('message', (entry: VerifyJob) => {
   };
 
   try {
-    const script = fs.readFileSync(entry.file, 'utf8');
+    const script = entry.answer;
 
     let header = '';
     header += '"use strict";\n';
@@ -93,7 +93,7 @@ process.on('message', (entry: VerifyJob) => {
   } catch (err) {
     console.error('Script error:', err);
 
-    process.send && process.send({ valid: false, err: 'Your script is broken' });
+    process.send && process.send({ valid: false, err: err.message });
   }
 });
 

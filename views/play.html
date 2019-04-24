@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
   <link href="css/app.css" rel="stylesheet" media="screen" />
+  <link rel="stylesheet" data-name="vs/editor/editor.main" href="/editor.main.css">
 </head>
 <body>
   <div class="container">
@@ -53,6 +54,8 @@
             {{#game.running}}
             <h3>Add Entry</h3>
 
+            <span hidden id="currentAnswer">{{currentAnswer}}</span>
+
             {{#err}}
             <div class="bs-callout bs-callout-danger">
               <h4>Oops, your entry is incorrect</h4>
@@ -60,13 +63,15 @@
             </div>
             {{/err}}
 
+            <div id="code-container" style="height:200px;border:1px solid grey"></div>
+
             <form method="post" action="submit" class="submit-form" enctype="multipart/form-data">
               <input type="text" name="email" value="{{session.email}}" placeholder="email address (for gravatar)" {{#session.email}}readonly{{/session.email}} />
               <input type="text" name="team" value="{{session.team}}" placeholder="team name" maxlength="16" {{#session.team}}readonly{{/session.team}} />
-              <input type="file" name="file" onchange="javascript:this.form.submit();" />
+              <input type="hidden" id="answer" name="answer" value="{{session.answer}}"/>
               <input type="hidden" name="key" value="{{session.key}}" />
               <div class="footer">
-                <a href='#' class="btn btn-lg btn-info">Choose File</a>
+                <a href='#' class="btn btn-lg btn-info" onclick="javascript:this.form.submit();">Add Answer</a>
               </div>
             </form>
             {{/game.running}}
@@ -84,7 +89,39 @@
     {{/showaddentry}}
   </div>
 
+
+  <script>var require = { paths: { 'vs': '/vs' } };</script>
+  <script src="/loader.js"></script>
+  <script src="/editor.main.nls.js"></script>
+  <script src="/editor.main.js"></script>
+
   <script type="text/javascript" src="js/jquery.js"></script>
+
+  {{#game.running}}
+  <script>
+    var initalAnswer = 'var play = function () {}';
+
+    var currentAnswer = $('#currentAnswer').text();
+
+    console.log("currentAnswer", currentAnswer)
+    console.log($('#currentAnswer'))
+
+    var editor = monaco.editor.create(document.getElementById('code-container'), {
+      value: currentAnswer || initalAnswer,
+      language: 'javascript',
+      theme: 'vs-dark'
+    });
+
+    function saveEditorValue() {
+      var answer = editor.getValue()
+      console.log($('#answer')[0])
+      $('#answer').val(answer)
+    }
+  </script>
+  {{/game.running}}
+
+  {{}}
+
   <script type="text/javascript">
 
     $(function() {
@@ -97,7 +134,12 @@
 
       $('.submit-form a').click(function(e) {
         e.preventDefault();
-        $('.submit-form input[type="file"]').click();
+
+        saveEditorValue()
+
+        console.log($('.submit-form'))
+
+        $('.submit-form').submit();
       });
 
       {{#autoreload}}

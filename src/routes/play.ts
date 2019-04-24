@@ -6,8 +6,49 @@ import game = require('../game/game');
 import { Game, Entry } from '../game/game';
 import gameVerifier = require('../game/game-verifier');
 import { challenges } from '../challenges';
+import path = require('path');
 
 const app = express();
+
+app.get('/loader.js', (req, res) => {
+  res.sendFile(path.resolve('node_modules/monaco-editor/min/vs/loader.js'));
+});
+
+app.get('/editor.main.nls.js', (req, res) => {
+  res.sendFile(path.resolve('node_modules/monaco-editor/min/vs/editor/editor.main.nls.js'));
+});
+
+app.get('/editor.main.js', (req, res) => {
+  res.sendFile(path.resolve('node_modules/monaco-editor/min/vs/editor/editor.main.js'));
+});
+
+app.get('/vs', (req, res) => {
+  res.sendFile(path.resolve('node_modules/monaco-editor/min/vs'));
+});
+
+app.get('/editor.main.css', (req, res) => {
+  res.sendFile(path.resolve('node_modules/monaco-editor/min/vs/editor/editor.main.css'));
+});
+
+app.get('/vs/language/typescript/tsMode.js', (req, res) => {
+  res.sendFile(path.resolve('node_modules/monaco-editor/min/vs/language/typescript/tsMode.js'));
+});
+
+app.get('/vs/language/typescript/javascript.js', (req, res) => {
+  res.sendFile(path.resolve('node_modules/monaco-editor/min/vs/language/typescript/javascript.js'));
+});
+
+app.get('/vs/base/worker/workerMain.js', (req, res) => {
+  res.sendFile(path.resolve('node_modules/monaco-editor/min/vs/base/worker/workerMain.js'));
+});
+
+app.get('/vs/language/typescript/tsWorker.js', (req, res) => {
+  res.sendFile(path.resolve('node_modules/monaco-editor/min/vs/language/typescript/tsWorker.js'));
+});
+
+app.get('/vs/basic-languages/javascript/javascript.js', (req, res) => {
+  res.sendFile(path.resolve('node_modules/monaco-editor/min/vs/basic-languages/javascript/javascript.js'));
+});
 
 app.get('/', (req, res) => {
   const currentGame = game.get();
@@ -21,6 +62,9 @@ app.get('/', (req, res) => {
     team: req.query.team,
     key: req.query.key,
   };
+
+  const currentEntry = (<Entry | undefined>lodash.find(currentGame.entries, { email: session.email }));
+  const currentAnswer = currentEntry ? currentEntry.answer : '';
 
   // tslint:disable-next-line:max-line-length
   const validEntries = lodash.sortBy(lodash.filter(currentGame.entries, { valid: true }), 'strokes');
@@ -48,6 +92,7 @@ app.get('/', (req, res) => {
     session,
     challenge,
     clock,
+    currentAnswer,
     game: currentGame,
     entries: allEntries,
     err: req.query.err,
@@ -61,7 +106,7 @@ app.get('/solution/:key', (req, res) => {
     const entry = lodash.find(game.entries, { key });
 
     if (entry) {
-      return fs.readFileSync(entry.file, 'utf8');
+      return entry.answer;
     }
   };
 
@@ -91,6 +136,7 @@ app.post('/submit', (req, res) => {
     const email = fields['email'][0];
     const team = fields['team'][0];
     const key = fields['key'][0];
+    const answer = fields['answer'][0];
 
     const file = files && files['file'] && files['file'][0] ? files['file'][0].path : null;
 
@@ -98,7 +144,7 @@ app.post('/submit', (req, res) => {
       email,
       team,
       key,
-      file,
+      answer,
     };
 
     const result = game.addEntry(entry);
@@ -107,7 +153,7 @@ app.post('/submit', (req, res) => {
       return redirect(result.entry || {}, result.err);
     }
 
-    gameVerifier.verify(entry.file, (status) => {
+    gameVerifier.verify(entry.answer, (status) => {
       if (result.entry && result.entry.key) {
         game.setValid(result.entry.key, status.valid);
       }
