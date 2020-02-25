@@ -22,9 +22,9 @@ const formatTypeAndValue = (value: any, actual: any) => {
 
   if (type === 'undefined') return 'undefined';
   if (type === 'function') return 'function';
-  if (type === 'array') return (actual ? 'different ' : '') + 'array of ' + value.length + ' items';
+  if (type === 'array') return `${actual ? 'different ' : ''}array of ${value.length} items`;
   // tslint:disable-next-line:max-line-length
-  if (type === 'string') return (actual ? 'different ' : '') + 'string of ' + value.length + ' chars';
+  if (type === 'string') return `${actual ? 'different ' : ''}string of ${value.length} chars`;
 
   const digits = value.toString().replace(/[^0-9]/g, '').length;
   return digits + ' digit number';
@@ -56,6 +56,10 @@ process.on('message', (entry: VerifyJob) => {
 
     if (entry.rules.indexOf('no-sort') !== -1) {
       header += 'Array.prototype.sort = function() { throw true; };\n';
+
+      if (script.indexOf('.sort(') !== -1) {
+        return generalError('The sort array operator is forbidden');
+      }
     }
 
     if (entry.rules.indexOf('no-add') !== -1) {
@@ -72,10 +76,14 @@ process.on('message', (entry: VerifyJob) => {
       }
     }
 
-    vm.runInNewContext(header + script, global);
+    vm.runInNewContext(`${header} var play = ${script}`, global);
 
     if (!global.play) {
       return process.send && process.send({ valid: false, err: 'No global play function defined' });
+    }
+
+    if (global.play && typeof global.play !== 'function') {
+      return process.send && process.send({ valid: false, err: 'Script contains no function, format should be: "() => {}"' });
     }
 
     const actualOutput = global.play(entry.input);
