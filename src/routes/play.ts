@@ -1,19 +1,19 @@
-import fs = require('fs');
-import lodash = require('lodash');
-import express = require('express');
-import multiparty = require('multiparty');
-import game = require('../game/game');
-import { Game, Entry } from '../game/game';
-import gameVerifier = require('../game/game-verifier');
-import { challenges } from '../challenges';
+import fs = require("fs");
+import lodash = require("lodash");
+import express = require("express");
+import multiparty = require("multiparty");
+
+import * as game from "../game/game";
+import { verify } from "../game/game-verifier";
+import { challenges } from "../challenges";
 
 const app = express();
 
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
   const currentGame = game.get();
 
   if (!currentGame) {
-    return res.render('no-game');
+    return res.render("no-game");
   }
 
   const session = {
@@ -22,46 +22,40 @@ app.get('/', (req, res) => {
     key: req.query.key,
   };
 
-  // tslint:disable-next-line:max-line-length
-  const validEntries = lodash.sortBy(lodash.filter(currentGame.entries, { valid: true }), 'strokes');
-  // tslint:disable-next-line:max-line-length
-  const invalidEntries = lodash.sortBy(lodash.filter(currentGame.entries, { valid: false }), 'strokes');
-
-  const allEntries = validEntries.concat(invalidEntries);
-
   const challenge = challenges[currentGame.key];
-
   const timeRemaining = game.getTimeRemainingSeconds();
 
-  let clock: string | undefined;
+  let clock = "";
 
-  if (timeRemaining && timeRemaining > 0) {
+  if (timeRemaining > 0) {
     const min = Math.floor(timeRemaining / 60).toString();
-    const sec = Math.floor(timeRemaining % 60).toString().padStart(2, '0');
-
-    clock = [min, sec].join(':');
+    const sec = Math.floor(timeRemaining % 60).toString().padStart(2, "0");
+    clock = [min, sec].join(":");
   } else {
-    clock = '0:00';
+    clock = "0:00";
   }
 
-  return res.render('play', {
+  const validEntries = lodash.sortBy(lodash.filter(currentGame.entries, { valid: true }), "strokes");
+  const invalidEntries = lodash.sortBy(lodash.filter(currentGame.entries, { valid: false }), "strokes");
+
+  return res.render("play", {
     session,
     challenge,
     clock,
     game: currentGame,
-    entries: allEntries,
+    entries: [...validEntries, ...invalidEntries],
     err: req.query.err,
-    autoreload: req.query.autoreload === 'true',
-    showaddentry: req.query.autoreload !== 'true',
+    autoreload: req.query.autoreload === "true",
+    showaddentry: req.query.autoreload !== "true",
   });
 });
 
-app.get('/solution/:key', (req, res) => {
-  const getSolution = (game: Game, key: string) => {
+app.get("/solution/:key", (req, res) => {
+  const getSolution = (game: game.Game, key: string) => {
     const entry = lodash.find(game.entries, { key });
 
     if (entry) {
-      return fs.readFileSync(entry.file, 'utf8');
+      return fs.readFileSync(entry.file, "utf8");
     }
   };
 
@@ -72,27 +66,33 @@ app.get('/solution/:key', (req, res) => {
     return res.send(403);
   }
 
-  return res.set('Content-Type', 'text/plain').send(solution || 'No solution found');
+  return res.set("Content-Type", "text/plain").send(solution || "No solution found");
 });
 
-app.post('/submit', (req, res) => {
-  const redirect = (result: Partial<Entry>, err: {}) => {
-    const url = '/?email=' + (result.email || '')
-      + '&team=' + (result.team || '')
-      + '&key=' + (result.key || '')
-      + '&err=' + (err || '');
-
+app.post("/submit", (req, res) => {
+  const redirect = (result: Partial<game.Entry>, err: {}) => {
+    const url = [
+      "/?email=",
+      result.email,
+      "&team=",
+      result.team,
+      "&key=",
+      result.key,
+      "&err=",
+      err,
+    ].filter(p => !!p).join('');
+    
     return res.redirect(url);
   };
 
   const form = new multiparty.Form();
 
   form.parse(req, (err, fields, files) => {
-    const email = fields['email'][0];
-    const team = fields['team'][0];
-    const key = fields['key'][0];
+    const email = fields["email"][0];
+    const team = fields["team"][0];
+    const key = fields["key"][0];
 
-    const file = files && files['file'] && files['file'][0] ? files['file'][0].path : null;
+    const file = files && files["file"] && files["file"][0] ? files["file"][0].path : null;
 
     const entry = {
       email,
@@ -107,8 +107,8 @@ app.post('/submit', (req, res) => {
       return redirect(result.entry || {}, result.err);
     }
 
-    gameVerifier.verify(entry.file, (status) => {
-      if (result.entry && result.entry.key) {
+    verify(entry.file, (status) => {
+      if (result?.entry?.key) {
         game.setValid(result.entry.key, status.valid);
       }
 
@@ -117,4 +117,4 @@ app.post('/submit', (req, res) => {
   });
 });
 
-export = app;
+export default app;

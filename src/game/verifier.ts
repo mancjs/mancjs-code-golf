@@ -1,102 +1,145 @@
-import fs = require('fs');
-import vm = require('vm');
-import lodash = require('lodash');
-import { Primative, Rule } from '../challenges';
+import lodash from "lodash";
+import { readFileSync } from "fs";
+import { runInNewContext } from "vm";
+import { Primative, Rule } from "../challenges";
 
-interface VerifyJob {
+export interface VerifyJob {
   file: string;
   input: Primative;
   output: Primative;
   rules: Rule[];
 }
 
-const global = {} as { play?: Function, eval?: undefined };
+interface GlobalScope {
+  module: {
+    exports?: Function;
+  };
+  eval?: undefined;
+}
+
+const global: GlobalScope = {
+  module: {},
+};
 
 const formatTypeAndValue = (value: any, actual: any) => {
-  const getType = function (value: any) {
-    if (lodash.isArray(value)) return 'array';
+  const getType = (value: any) => {
+    if (Array.isArray(value)) {
+      return "array";
+    }
+
     return typeof value;
   };
 
+  if (value === null) {
+    return "null";
+  }
+
   const type = getType(value);
 
-  if (type === 'undefined') return 'undefined';
-  if (type === 'function') return 'function';
-  if (type === 'array') return (actual ? 'different ' : '') + 'array of ' + value.length + ' items';
-  // tslint:disable-next-line:max-line-length
-  if (type === 'string') return (actual ? 'different ' : '') + 'string of ' + value.length + ' chars';
+  if (type === "undefined") {
+    return "undefined";
+  }
 
-  const digits = value.toString().replace(/[^0-9]/g, '').length;
-  return digits + ' digit number';
+  if (type === "function") {
+    return "function";
+  }
+
+  if (type === "array") {
+    return (actual ? "different " : "") + "array of " + value.length + " items";
+  }
+
+  if (type === "string") {
+    return (actual ? "different " : "") + "string of " + value.length + " chars";
+  }
+
+  if (type === "object") {
+    return (actual ? "different " : "") + "object";
+  }
+
+  const digits = value.toString().replace(/[^0-9]/g, "").length;
+  return `${digits} digit number`;
 };
 
-process.on('message', (entry: VerifyJob) => {
-  const error = function (expected: any, actual: any) {
+process.on("message", (entry: VerifyJob) => {
+  const error = (expected: any, actual: any) => {
     const expectedError = formatTypeAndValue(expected, false);
     const actualError = formatTypeAndValue(actual, true);
 
-    return process.send && process.send({
+    return process.send?.({
+      err: "expected " + expectedError + ", got " + actualError,
       valid: false,
-      err: 'expected ' + expectedError + ', got ' + actualError,
     });
   };
 
-  const generalError = function (err: string) {
-    return process.send && process.send({
+  const generalError = (err: string) => {
+    return process.send?.({
       err,
       valid: false,
     });
   };
 
+  const ruleActive = (entry: VerifyJob, rule: Rule): boolean => {
+    return entry.rules.indexOf(rule) !== -1;
+  };
+
   try {
-    const script = fs.readFileSync(entry.file, 'utf8');
+    const script = readFileSync(entry.file, "utf8");
 
-    let header = '';
-    header += '"use strict";\n';
+    let header = '"use strict";\n';
 
-    if (entry.rules.indexOf('no-sort') !== -1) {
-      header += 'Array.prototype.sort = function() { throw true; };\n';
+    if (ruleActive(entry, "no-sort")) {
+      header += "Array.prototype.sort = function() { throw true; };\n";
     }
 
-    if (entry.rules.indexOf('no-add') !== -1) {
-      if (script.indexOf('+') !== -1) {
-        return generalError('The plus operator is forbidden');
-      }
+    if (ruleActive(entry, "no-add") && script.indexOf("+") !== -1) {
+      return generalError("The plus operator is forbidden");
     }
 
-    if (entry.rules.indexOf('no-eval') !== -1) {
+    if (ruleActive(entry, "no-eval")) {
       global.eval = undefined;
 
-      if (script.indexOf('eval') !== -1) {
-        return generalError('Nice try but I\'m not letting you use eval...');
+      if (script.indexOf("eval") !== -1) {
+        return generalError("Nice try but I'm not letting you use eval...");
       }
     }
 
-    vm.runInNewContext(header + script, global);
+    runInNewContext(header + script, global);
 
-    if (!global.play) {
-      return process.send && process.send({ valid: false, err: 'No global play function defined' });
+    const play = global.module.exports;
+
+    if (typeof play !== "function") {
+      return process.send?.({
+        err: "module.exports is not a function – make sure you assign your function to module.exports",
+        valid: false,
+      });
     }
 
-    const actualOutput = global.play(entry.input);
+    const isObject = (value: any): boolean => {
+      return value !== null && !Array.isArray(value) && typeof value === 'object';
+    };
+
+    const actualOutput = play(entry.input);
     const expectedOutput = entry.output;
 
-    if (lodash.isArray(actualOutput) && lodash.isArray(expectedOutput)) {
+    if (Array.isArray(actualOutput) && Array.isArray(expectedOutput)) {
       if (actualOutput.toString() !== expectedOutput.toString()) {
+        return error(expectedOutput, actualOutput);
+      }
+    } else if (isObject(actualOutput) && isObject(expectedOutput)) {
+      if (!lodash.isEqual(actualOutput, expectedOutput)) {
         return error(expectedOutput, actualOutput);
       }
     } else if (actualOutput !== expectedOutput) {
       return error(expectedOutput, actualOutput);
     }
 
-    process.send && process.send({ valid: true });
+    process.send?.({ valid: true });
   } catch (err) {
-    console.error('Script error:', err);
+    console.error("verifier failed with error:", err);
 
-    process.send && process.send({ valid: false, err: 'Your script is broken' });
+    process.send?.({
+      err: "Your script contains an error",
+      valid: false,
+    });
   }
 });
-
-export {
-  VerifyJob,
-};

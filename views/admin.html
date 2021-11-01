@@ -42,7 +42,7 @@
           </ul>
         </div>
 
-        <form method="post" action="/start">
+        <form id="game" method="post" action="/start">
           <input type="hidden" name="key" id="key" value="{{game.key}}" />
 
           <label for="title">Title <span>(new title starts a new game)</span></label>
@@ -70,7 +70,7 @@
 
           <div class="buttons">
             <a href="/stop" class="btn btn-lg btn-danger">Stop Game</a>
-            <input type="submit" value="Start Game" class="btn btn-lg btn-success" />
+            <a href="/start" class="btn btn-lg btn-success">Start Game</a>
           </div>
         </form>
       </div>
@@ -82,6 +82,11 @@
   <script type="text/javascript">
 
     $(function() {
+      $('.btn-success').click(function(e) {
+        e.preventDefault();
+        document.querySelector('#game').submit();
+      });
+
       $('.challenge-link').click(function() {
         var link = $(this);
         var key = link.data('key');
