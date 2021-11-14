@@ -57,7 +57,7 @@ const formatTypeAndValue = (value: any, actual: any) => {
   }
 
   const digits = value.toString().replace(/[^0-9]/g, "").length;
-  return `${digits} digit number`;
+  return (actual ? "different " : "") + `${digits} digit number`;
 };
 
 process.on("message", (entry: VerifyJob) => {

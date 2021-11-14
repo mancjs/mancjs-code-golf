@@ -1,6 +1,6 @@
 import solution from "../challenges/c2-sort-the-numbers/solution";
 
-describe("sort-the-numbers solution", () => {
+describe("sort the numbers solution", () => {
   test("three numbers", () => {
     expect(solution([3, 2, 1])).toEqual([1, 2, 3]);
   });

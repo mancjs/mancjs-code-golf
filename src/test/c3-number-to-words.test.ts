@@ -1,6 +1,6 @@
 import solution from "../challenges/c3-number-to-words/solution";
 
-describe("number-to-words solution", () => {
+describe("number to words solution", () => {
   test("one digit", () => {
     expect(solution(2)).toBe("two");
   });

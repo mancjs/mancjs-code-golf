@@ -1,6 +1,6 @@
 import solution from "../challenges/c1-number-reader/solution";
 
-describe("number-reader solution", () => {
+describe("number reader solution", () => {
   test("one digit", () => {
     expect(solution(1)).toBe("one");
   });
