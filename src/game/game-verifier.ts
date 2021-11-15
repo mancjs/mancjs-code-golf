@@ -4,7 +4,7 @@ import { getChallenge } from "./challenge-library";
 import type { VerifyJob } from "./verifier";
 import * as game from "./game";
 
-const MAX_RUNTIME = 5000;
+const MAX_RUNTIME = 10000;
 
 export const verify = (file: string, callback: (res: { valid: false; err: string }) => void) => {
   const currentGame = game.getOrError();
