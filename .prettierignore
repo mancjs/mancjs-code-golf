@@ -1,0 +1,17 @@
+solution.js
+solution.ts
+
+.gitattributes
+.gitignore
+.nvmrc
+.prettierignore
+.node-version
+LICENCE
+
+bootstrap.*
+jquery.*
+
+/public/fonts/
+/public/img/
+
+/data/
