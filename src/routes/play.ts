@@ -81,13 +81,13 @@ app.post("/submit", (req, res) => {
       "&err=",
       err,
     ].filter(p => !!p).join('');
-    
+
     return res.redirect(url);
   };
 
   const form = new multiparty.Form();
 
-  form.parse(req, (err, fields, files) => {
+  form.parse(req, (_err, fields, files) => {
     const email = fields["email"][0];
     const team = fields["team"][0];
     const key = fields["key"][0];

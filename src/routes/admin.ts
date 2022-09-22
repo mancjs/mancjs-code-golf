@@ -14,7 +14,7 @@ const authorizer = (username: string, password: string) => {
 
 app.use(expressBasicAuth({ authorizer, challenge: true }));
 
-app.get("/admin", (req, res) => {
+app.get("/admin", (_req, res) => {
   return res.render("admin", {
     gameData: JSON.stringify(game.get(), undefined, 2),
     challenge: game.getCurrentChallenge(),
@@ -35,7 +35,7 @@ app.post("/start", (req, res) => {
   return res.redirect("/admin");
 });
 
-app.get("/stop", (req, res) => {
+app.get("/stop", (_req, res) => {
   game.stop();
   return res.redirect("/admin");
 });
