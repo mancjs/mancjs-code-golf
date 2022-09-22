@@ -1,7 +1,7 @@
-import solution from "../challenges/c12-remainder/solution";
+import solution from '../challenges/c12-remainder/solution';
 
-describe("remainder solution", () => {
-  test("computes correct remainders", () => {
+describe('remainder solution', () => {
+  test('computes correct remainders', () => {
     expect(solution([10, 5])).toEqual(0);
     expect(solution([5, 10])).toEqual(5);
     expect(solution([7, 3])).toEqual(1);

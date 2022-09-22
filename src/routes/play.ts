@@ -1,19 +1,19 @@
-import fs = require("fs");
-import lodash = require("lodash");
-import express = require("express");
-import multiparty = require("multiparty");
+import fs = require('fs');
+import lodash = require('lodash');
+import express = require('express');
+import multiparty = require('multiparty');
 
-import * as game from "../game/game";
-import { verify } from "../game/game-verifier";
-import { challenges } from "../challenges";
+import * as game from '../game/game';
+import { verify } from '../game/game-verifier';
+import { challenges } from '../challenges';
 
 const app = express();
 
-app.get("/", (req, res) => {
+app.get('/', (req, res) => {
   const currentGame = game.get();
 
   if (!currentGame) {
-    return res.render("no-game");
+    return res.render('no-game');
   }
 
   const session = {
@@ -25,37 +25,45 @@ app.get("/", (req, res) => {
   const challenge = challenges[currentGame.key];
   const timeRemaining = game.getTimeRemainingSeconds();
 
-  let clock = "";
+  let clock = '';
 
   if (timeRemaining > 0) {
     const min = Math.floor(timeRemaining / 60).toString();
-    const sec = Math.floor(timeRemaining % 60).toString().padStart(2, "0");
-    clock = [min, sec].join(":");
+    const sec = Math.floor(timeRemaining % 60)
+      .toString()
+      .padStart(2, '0');
+    clock = [min, sec].join(':');
   } else {
-    clock = "0:00";
+    clock = '0:00';
   }
 
-  const validEntries = lodash.sortBy(lodash.filter(currentGame.entries, { valid: true }), "strokes");
-  const invalidEntries = lodash.sortBy(lodash.filter(currentGame.entries, { valid: false }), "strokes");
+  const validEntries = lodash.sortBy(
+    lodash.filter(currentGame.entries, { valid: true }),
+    'strokes'
+  );
+  const invalidEntries = lodash.sortBy(
+    lodash.filter(currentGame.entries, { valid: false }),
+    'strokes'
+  );
 
-  return res.render("play", {
+  return res.render('play', {
     session,
     challenge,
     clock,
     game: currentGame,
     entries: [...validEntries, ...invalidEntries],
     err: req.query.err,
-    autoreload: req.query.autoreload === "true",
-    showaddentry: req.query.autoreload !== "true",
+    autoreload: req.query.autoreload === 'true',
+    showaddentry: req.query.autoreload !== 'true',
   });
 });
 
-app.get("/solution/:key", (req, res) => {
+app.get('/solution/:key', (req, res) => {
   const getSolution = (game: game.Game, key: string) => {
     const entry = lodash.find(game.entries, { key });
 
     if (entry) {
-      return fs.readFileSync(entry.file, "utf8");
+      return fs.readFileSync(entry.file, 'utf8');
     }
   };
 
@@ -66,21 +74,25 @@ app.get("/solution/:key", (req, res) => {
     return res.send(403);
   }
 
-  return res.set("Content-Type", "text/plain").send(solution || "No solution found");
+  return res
+    .set('Content-Type', 'text/plain')
+    .send(solution || 'No solution found');
 });
 
-app.post("/submit", (req, res) => {
+app.post('/submit', (req, res) => {
   const redirect = (result: Partial<game.Entry>, err: {}) => {
     const url = [
-      "/?email=",
+      '/?email=',
       result.email,
-      "&team=",
+      '&team=',
       result.team,
-      "&key=",
+      '&key=',
       result.key,
-      "&err=",
+      '&err=',
       err,
-    ].filter(p => !!p).join('');
+    ]
+      .filter((p) => !!p)
+      .join('');
 
     return res.redirect(url);
   };
@@ -88,11 +100,12 @@ app.post("/submit", (req, res) => {
   const form = new multiparty.Form();
 
   form.parse(req, (_err, fields, files) => {
-    const email = fields["email"][0];
-    const team = fields["team"][0];
-    const key = fields["key"][0];
+    const email = fields['email'][0];
+    const team = fields['team'][0];
+    const key = fields['key'][0];
 
-    const file = files && files["file"] && files["file"][0] ? files["file"][0].path : null;
+    const file =
+      files && files['file'] && files['file'][0] ? files['file'][0].path : null;
 
     const entry = {
       email,

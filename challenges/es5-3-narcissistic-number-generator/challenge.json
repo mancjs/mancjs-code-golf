@@ -1,15 +1,6 @@
 {
   "title": "Narcissistic Number Generator",
-  "input": [
-    5,
-    400
-  ],
-  "output": [
-    407,
-    1634,
-    8208,
-    9474,
-    54748
-  ],
+  "input": [5, 400],
+  "output": [407, 1634, 8208, 9474, 54748],
   "description": "Generate the next X narcissistic numbers larger than the number Y, where your play function is called with the array [X, Y]. Return your answer in an array."
 }

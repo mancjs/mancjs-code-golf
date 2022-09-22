@@ -1,3 +1,3 @@
-declare function play(words: string[]): number
+declare function play(words: string[]): number;
 
 export = play;

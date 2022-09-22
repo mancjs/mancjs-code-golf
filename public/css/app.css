@@ -23,7 +23,8 @@ label span {
   color: #aaa;
 }
 
-input[type='text'], textarea {
+input[type='text'],
+textarea {
   color: #555;
   padding: 8px;
   border: solid 1px #ccc;
@@ -177,7 +178,7 @@ code {
 
 .bs-callout-danger {
   background-color: #fcf2f2;
-  border-color: #dFb5b4;
+  border-color: #dfb5b4;
 }
 
 .bs-callout-warning {

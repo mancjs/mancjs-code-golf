@@ -1,145 +1,152 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>MancJS: JavaScript Golf</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
-  <link href="css/app.css" rel="stylesheet" media="screen" />
-</head>
-<body>
-  <div class="container">
-    <div class="row challenge-details">
-      <div class="col-md-12">
-        <div class="bs-callout bs-callout-info">
-          <h4>{{challenge.title}}</h4>
-          <div class="challenge-info">
-            {{challenge.description}}
+  <head>
+    <title>MancJS: JavaScript Golf</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
+    <link href="css/app.css" rel="stylesheet" media="screen" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="row challenge-details">
+        <div class="col-md-12">
+          <div class="bs-callout bs-callout-info">
+            <h4>{{challenge.title}}</h4>
+            <div class="challenge-info">{{challenge.description}}</div>
+
+            <h4>Example</h4>
+            <div class="challenge-example">{{challenge.example}}</div>
           </div>
 
-          <h4>Example</h4>
-          <div class="challenge-example">
-            {{challenge.example}}
-          </div>
-        </div>
+          <div class="clock">Time remaining: <span>{{clock}}</span></div>
 
-        <div class="clock">
-          Time remaining: <span>{{clock}}</span>
-        </div>
-
-        <div class="entries">
-          {{#entries}}
-
-            {{^game.running}}
+          <div class="entries">
+            {{#entries}} {{^game.running}}
             <a href="/solution/{{key}}" target="_blank">
-            {{/game.running}}
+              {{/game.running}}
 
-            <div class="entry {{^valid}}invalid{{/valid}}">
-              <div class="name">{{team}}</div>
-              <img src="{{gravatar}}" />
-              <div class="strokes">
-                {{strokes}}
-                <span>strokes</span>
+              <div class="entry {{^valid}}invalid{{/valid}}">
+                <div class="name">{{team}}</div>
+                <img src="{{gravatar}}" />
+                <div class="strokes">
+                  {{strokes}}
+                  <span>strokes</span>
+                </div>
               </div>
-            </div>
 
-            {{^game.running}}
+              {{^game.running}}
             </a>
-            {{/game.running}}
-
-          {{/entries}}
-        </div>
-      </div>
-    </div>
-
-    {{#showaddentry}}
-    <div class="add-entry">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-12">
-            {{#game.running}}
-            <h3>Add Entry</h3>
-
-            {{#err}}
-            <div class="bs-callout bs-callout-danger">
-              <h4>Oops, your entry is incorrect</h4>
-              <p>{{err}}</p>
-            </div>
-            {{/err}}
-
-            <form method="post" action="submit" class="submit-form" enctype="multipart/form-data">
-              <input type="text" name="email" value="{{session.email}}" placeholder="email address (for gravatar)" {{#session.email}}readonly{{/session.email}} />
-              <input type="text" name="team" value="{{session.team}}" placeholder="team name" maxlength="16" {{#session.team}}readonly{{/session.team}} />
-              <input type="file" name="file" onchange="javascript:this.form.submit();" />
-              <input type="hidden" name="key" value="{{session.key}}" />
-              <div class="footer">
-                <a href='#' class="btn btn-lg btn-info">Choose File</a>
-              </div>
-            </form>
-            {{/game.running}}
-
-            {{^game.running}}
-            <h3>Game over</h3>
-            <h4>You can now view other solutions by clicking on them.</h4>
-            {{/game.running}}
-
-            <p>View the <a href="https://github.com/mancjs/mancjs-code-golf#playing" target="_blank">rules</a></p>
+            {{/game.running}} {{/entries}}
           </div>
         </div>
       </div>
+
+      {{#showaddentry}}
+      <div class="add-entry">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              {{#game.running}}
+              <h3>Add Entry</h3>
+
+              {{#err}}
+              <div class="bs-callout bs-callout-danger">
+                <h4>Oops, your entry is incorrect</h4>
+                <p>{{err}}</p>
+              </div>
+              {{/err}}
+
+              <form
+                method="post"
+                action="submit"
+                class="submit-form"
+                enctype="multipart/form-data"
+              >
+                <input type="text" name="email" value="{{session.email}}"
+                placeholder="email address (for gravatar)"
+                {{#session.email}}readonly{{/session.email}} /> <input
+                type="text" name="team" value="{{session.team}}"
+                placeholder="team name" maxlength="16"
+                {{#session.team}}readonly{{/session.team}} />
+                <input
+                  type="file"
+                  name="file"
+                  onchange="javascript:this.form.submit();"
+                />
+                <input type="hidden" name="key" value="{{session.key}}" />
+                <div class="footer">
+                  <a href="#" class="btn btn-lg btn-info">Choose File</a>
+                </div>
+              </form>
+              {{/game.running}} {{^game.running}}
+              <h3>Game over</h3>
+              <h4>You can now view other solutions by clicking on them.</h4>
+              {{/game.running}}
+
+              <p>
+                View the
+                <a
+                  href="https://github.com/mancjs/mancjs-code-golf#playing"
+                  target="_blank"
+                  >rules</a
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{/showaddentry}}
     </div>
-    {{/showaddentry}}
-  </div>
 
-  <script type="text/javascript" src="js/jquery.js"></script>
-  <script type="text/javascript">
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript">
 
-    $(function() {
-      var offsetAddEntryHeight = function() {
-        $('.challenge-details').css('margin-bottom', ($('.add-entry').height() + 50) + 'px');
-      };
+      $(function() {
+        var offsetAddEntryHeight = function() {
+          $('.challenge-details').css('margin-bottom', ($('.add-entry').height() + 50) + 'px');
+        };
 
-      offsetAddEntryHeight();
-      $(window).on('resize', offsetAddEntryHeight);
+        offsetAddEntryHeight();
+        $(window).on('resize', offsetAddEntryHeight);
 
-      $('.submit-form a').click(function(e) {
-        e.preventDefault();
-        $('.submit-form input[type="file"]').click();
+        $('.submit-form a').click(function(e) {
+          e.preventDefault();
+          $('.submit-form input[type="file"]').click();
+        });
+
+        {{#autoreload}}
+          setTimeout(function() {
+            window.location = window.location;
+          }, 3000);
+        {{/autoreload}}
+
+        $('.clock span').each(function() {
+          var clock = $(this);
+
+          var parts = clock.text().trim().split(':');
+
+          if (parts.length !== 2) return;
+
+          var min = parseInt(parts[0], 10), sec = parseInt(parts[1], 10);
+
+          if (isNaN(min) || isNaN(sec)) return;
+
+          var timeRemaining = min * 60 + sec;
+
+          setInterval(function() {
+            if (timeRemaining <= 0) return;
+
+            timeRemaining -= 1;
+
+            var min = Math.floor(timeRemaining / 60).toString();
+            var sec = Math.floor(timeRemaining % 60).toString();
+
+            if (sec.length === 1) sec = '0' + sec;
+
+            clock.text([min, sec].join(':'));
+          }, 1000);
+        });
       });
-
-      {{#autoreload}}
-        setTimeout(function() {
-          window.location = window.location;
-        }, 3000);
-      {{/autoreload}}
-
-      $('.clock span').each(function() {
-        var clock = $(this);
-
-        var parts = clock.text().trim().split(':');
-
-        if (parts.length !== 2) return;
-
-        var min = parseInt(parts[0], 10), sec = parseInt(parts[1], 10);
-
-        if (isNaN(min) || isNaN(sec)) return;
-
-        var timeRemaining = min * 60 + sec;
-
-        setInterval(function() {
-          if (timeRemaining <= 0) return;
-
-          timeRemaining -= 1;
-
-          var min = Math.floor(timeRemaining / 60).toString();
-          var sec = Math.floor(timeRemaining % 60).toString();
-
-          if (sec.length === 1) sec = '0' + sec;
-
-          clock.text([min, sec].join(':'));
-        }, 1000);
-      });
-    });
-
-  </script>
-</body>
+    </script>
+  </body>
 </html>

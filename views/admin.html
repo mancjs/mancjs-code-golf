@@ -1,105 +1,126 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>MancJS: JavaScript Golf</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
-  <link href="css/app.css" rel="stylesheet" media="screen" />
-</head>
-<body>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12">
-        {{#game.running}}
-        <div class="bs-callout bs-callout-info">
-          <h4>Game is running</h4>
-          <p>Entries are private, submit <a href="/">here</a></p>
-        </div>
-        {{/game.running}}
-
-        {{^game.running}}
-        <div class="bs-callout bs-callout-danger">
-          <h4>Game is stopped</h4>
-          <p>Entries are visible to other users</p>
-        </div>
-        {{/game.running}}
-
-        <div class="dropdown">
-          <button class="btn btn-default dropdown-toggle" type="button" id="challengeMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            Challenges
-            <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu" aria-labelledby="challengeMenu">
-            {{#challengeList}}
-            <li>
-              <a href="javascript:void(0)"
-                 class="challenge-link"
-                 data-key="{{key}}">
-                {{title}}
-              </a>
-            </li>
-            {{/challengeList}}
-          </ul>
-        </div>
-
-        <form id="game" method="post" action="/start">
-          <input type="hidden" name="key" id="key" value="{{game.key}}" />
-
-          <label for="title">Title <span>(new title starts a new game)</span></label>
-          <input type="text" name="title" id="title" value="{{challenge.title}}" readonly="readonly" />
-
-          <label for="description">Description</label>
-          <textarea name="description" id="description" rows="5" readonly="readonly">{{challenge.description}}</textarea>
-
-          <label for="timeLimitMinutes">Time Limit (minutes)</label>
-          <input type="text" name="timeLimitMinutes" id="timeLimitMinutes" value="{{timeLimitMinutes}}" />
-
+  <head>
+    <title>MancJS: JavaScript Golf</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
+    <link href="css/app.css" rel="stylesheet" media="screen" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
           {{#game.running}}
-          <p>Enter a new time limit to extend the game</p>
+          <div class="bs-callout bs-callout-info">
+            <h4>Game is running</h4>
+            <p>Entries are private, submit <a href="/">here</a></p>
+          </div>
+          {{/game.running}} {{^game.running}}
+          <div class="bs-callout bs-callout-danger">
+            <h4>Game is stopped</h4>
+            <p>Entries are visible to other users</p>
+          </div>
           {{/game.running}}
 
-          {{#game.entries.length}}
-          <label>Entries</label>
-          <div>{{game.entries.length}}</div>
-          {{/game.entries.length}}
-
-          {{#gameData}}
-          <label>Data</label>
-          <pre>{{gameData}}</pre>
-          {{/gameData}}
-
-          <div class="buttons">
-            <a href="/stop" class="btn btn-lg btn-danger">Stop Game</a>
-            <a href="/start" class="btn btn-lg btn-success">Start Game</a>
+          <div class="dropdown">
+            <button
+              class="btn btn-default dropdown-toggle"
+              type="button"
+              id="challengeMenu"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="true"
+            >
+              Challenges
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="challengeMenu">
+              {{#challengeList}}
+              <li>
+                <a
+                  href="javascript:void(0)"
+                  class="challenge-link"
+                  data-key="{{key}}"
+                >
+                  {{title}}
+                </a>
+              </li>
+              {{/challengeList}}
+            </ul>
           </div>
-        </form>
+
+          <form id="game" method="post" action="/start">
+            <input type="hidden" name="key" id="key" value="{{game.key}}" />
+
+            <label for="title"
+              >Title <span>(new title starts a new game)</span></label
+            >
+            <input
+              type="text"
+              name="title"
+              id="title"
+              value="{{challenge.title}}"
+              readonly="readonly"
+            />
+
+            <label for="description">Description</label>
+            <textarea
+              name="description"
+              id="description"
+              rows="5"
+              readonly="readonly"
+            >
+{{challenge.description}}</textarea
+            >
+
+            <label for="timeLimitMinutes">Time Limit (minutes)</label>
+            <input
+              type="text"
+              name="timeLimitMinutes"
+              id="timeLimitMinutes"
+              value="{{timeLimitMinutes}}"
+            />
+
+            {{#game.running}}
+            <p>Enter a new time limit to extend the game</p>
+            {{/game.running}} {{#game.entries.length}}
+            <label>Entries</label>
+            <div>{{game.entries.length}}</div>
+            {{/game.entries.length}} {{#gameData}}
+            <label>Data</label>
+            <pre>{{gameData}}</pre>
+            {{/gameData}}
+
+            <div class="buttons">
+              <a href="/stop" class="btn btn-lg btn-danger">Stop Game</a>
+              <a href="/start" class="btn btn-lg btn-success">Start Game</a>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
 
-  <script type="text/javascript" src="js/jquery.js"></script>
-  <script type="text/javascript" src="js/bootstrap.min.js"></script>
-  <script type="text/javascript">
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+      $(function () {
+        $('.btn-success').click(function (e) {
+          e.preventDefault();
+          document.querySelector('#game').submit();
+        });
 
-    $(function() {
-      $('.btn-success').click(function(e) {
-        e.preventDefault();
-        document.querySelector('#game').submit();
-      });
+        $('.challenge-link').click(function () {
+          var link = $(this);
+          var key = link.data('key');
 
-      $('.challenge-link').click(function() {
-        var link = $(this);
-        var key = link.data('key');
-
-        $.get('/challenge', { key: key }, function(response) {
-          Object.keys(response).forEach(function(property) {
-            var input = document.querySelector('#' + property);
-            if (input) input.value = response[property];
+          $.get('/challenge', { key: key }, function (response) {
+            Object.keys(response).forEach(function (property) {
+              var input = document.querySelector('#' + property);
+              if (input) input.value = response[property];
+            });
           });
         });
       });
-    });
-
-  </script>
-</body>
+    </script>
+  </body>
 </html>

@@ -1,10 +1,10 @@
-import fs = require("fs");
-import path = require("path");
-import crypto = require("crypto");
-import lodash = require("lodash");
-const { jsmin } = require("jsmin");
+import fs = require('fs');
+import path = require('path');
+import crypto = require('crypto');
+import lodash = require('lodash');
+const { jsmin } = require('jsmin');
 
-import { challenges } from "../challenges";
+import { challenges } from '../challenges';
 
 const DEFAULT_TIME_LIMIT = 20;
 
@@ -36,7 +36,7 @@ export interface Entry extends AddEntryRequest {
 
 let game: Game | undefined;
 let expiresTimeout: NodeJS.Timer | undefined;
-const savePath = path.join(__dirname, "..", "..", "data", "game.json");
+const savePath = path.join(__dirname, '..', '..', 'data', 'game.json');
 
 export const start = (data: GameStart) => {
   const getNewExpires = (timeLimitMinutes: number) => {
@@ -44,7 +44,7 @@ export const start = (data: GameStart) => {
   };
 
   if (data.timeLimitMinutes && isNaN(data.timeLimitMinutes)) {
-    throw new Error("Invalid time limit");
+    throw new Error('Invalid time limit');
   }
 
   if (game?.key === data.key) {
@@ -104,7 +104,7 @@ export const getCurrentChallenge = () => {
 
 export const getOrError = () => {
   if (!game) {
-    throw new Error("No game");
+    throw new Error('No game');
   }
 
   return game;
@@ -114,48 +114,53 @@ export const getTimeRemainingSeconds = () => {
   if (!game?.running) {
     return 0;
   }
-  
+
   return game.expiresEpoch - Date.now() / 1000;
 };
 
-export const addEntry = (data: AddEntryRequest): { entry?: Partial<Entry>; err?: string } => {
+export const addEntry = (
+  data: AddEntryRequest
+): { entry?: Partial<Entry>; err?: string } => {
   const createKey = () => {
     return Math.round(Math.random() * 100000000000).toString(36);
   };
 
   const getGravatarUrl = (email: string) => {
-    const hash = crypto.createHash("md5").update(email).digest("hex");
-    return "http://www.gravatar.com/avatar/" + hash + "?s=130&d=wavatar";
+    const hash = crypto.createHash('md5').update(email).digest('hex');
+    return 'http://www.gravatar.com/avatar/' + hash + '?s=130&d=wavatar';
   };
 
   const countStrokes = (file: string) => {
     if (fs.existsSync(file)) {
-      const contents = jsmin(fs.readFileSync(file, "utf8"), 3).replace(/^\n+/, "");
+      const contents = jsmin(fs.readFileSync(file, 'utf8'), 3).replace(
+        /^\n+/,
+        ''
+      );
       return contents.length;
     }
   };
 
   if (!game?.running) {
-    return { err: "Game is not running" };
+    return { err: 'Game is not running' };
   }
 
   let entry = lodash.find(game.entries, { email: data.email });
 
   if (entry && entry.key !== data.key) {
-    return { err: "This email address is taken" };
+    return { err: 'This email address is taken' };
   }
 
   if (!entry) {
     if (!data.email) {
-      return { err: "Enter an email address" };
+      return { err: 'Enter an email address' };
     }
 
     if (!data.team) {
-      return { err: "Enter a team name" };
+      return { err: 'Enter a team name' };
     }
 
     if (!data.file) {
-      return { err: "No file was selected" };
+      return { err: 'No file was selected' };
     }
 
     entry = {
@@ -182,7 +187,7 @@ export const addEntry = (data: AddEntryRequest): { entry?: Partial<Entry>; err?:
     return { entry };
   }
 
-  return { err: "Unknown error" };
+  return { err: 'Unknown error' };
 };
 
 export const setValid = (key: string, valid: boolean) => {
@@ -205,7 +210,7 @@ const save = () => {
 
 const load = () => {
   if (fs.existsSync(savePath)) {
-    game = JSON.parse(fs.readFileSync(savePath, "utf8"));
+    game = JSON.parse(fs.readFileSync(savePath, 'utf8'));
     applyCountdown();
   }
 };

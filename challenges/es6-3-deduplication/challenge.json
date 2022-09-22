@@ -1,44 +1,12 @@
 {
   "title": "ES6 Deduplication",
   "input": [
-    350,
-    10,
-    8807,
-    2584,
-    6454,
-    9911,
-    17711,
-    4754,
-    3835,
-    4481,
-    17711,
-    210,
-    25000,
-    1,
-    4481,
-    12,
-    6454,
-    4481,
-    4754,
-    1
+    350, 10, 8807, 2584, 6454, 9911, 17711, 4754, 3835, 4481, 17711, 210, 25000,
+    1, 4481, 12, 6454, 4481, 4754, 1
   ],
   "output": [
-    350,
-    10,
-    8807,
-    2584,
-    6454,
-    9911,
-    17711,
-    4754,
-    3835,
-    4481,
-    17711,
-    210,
-    25000,
-    1,
-    12,
-    1
+    350, 10, 8807, 2584, 6454, 9911, 17711, 4754, 3835, 4481, 17711, 210, 25000,
+    1, 12, 1
   ],
   "description": "Your play function will be called with an array of numbers. Return a new array with duplicates removed, maintaining the original order. Oh, but we like duplicates that are Fibonacci numbers, so don't remove them."
 }
