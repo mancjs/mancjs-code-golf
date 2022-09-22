@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "A code golf game server for JavaScript",
   "scripts": {
-    "start": "CG_ADMIN=admin ts-node src",
+    "start": "CG_ADMIN_PASSWORD=admin ts-node src",
     "test": "jest",
     "test:watch": "jest --watch"
   },

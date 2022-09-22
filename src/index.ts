@@ -8,8 +8,8 @@ import admin from "./routes/admin";
 
 const PORT = 1122;
 
-if (!process.env["CG_ADMIN"]) {
-  console.error("Please set the CG_ADMIN environment variable");
+if (!process.env["CG_ADMIN_PASSWORD"]) {
+  console.error("Please set the CG_ADMIN_PASSWORD environment variable");
   process.exit(1);
 }
 
