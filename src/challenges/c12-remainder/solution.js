@@ -1,5 +1,5 @@
-function play() {
-  return "Hello, World!"
+function play([a, b]) {
+  return a % b;
 }
 
 if (typeof module !== 'undefined') {

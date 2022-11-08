@@ -1,63 +1,49 @@
-import express = require('express');
-import expressBasicAuth = require('express-basic-auth');
-import game = require('../game/game');
-import challengeLibrary = require('../game/challenge-library');
-import { GameStart } from '../game/game';
+import express = require("express");
+import expressBasicAuth = require("express-basic-auth");
 
-const DEFAULT_TIME_LIMIT = 10;
+import * as game from "../game/game";
+import * as challengeLibrary from "../game/challenge-library";
+
+const DEFAULT_TIME_LIMIT = 20;
 
 const app = express();
 
 const authorizer = (username: string, password: string) => {
-  return username === 'admin' && password === 'admin';
+  return username === "admin" && password === process.env['CG_ADMIN'];
 };
 
 app.use(expressBasicAuth({ authorizer, challenge: true }));
 
-app.get('/admin', (req, res) => {
-  const challengeList = challengeLibrary.getChallenges();
-
-  const gameState = game.get();
-  const challenge = game.getCurrentChallenge();
-  const timeRemaining = game.getTimeRemainingSeconds();
-
-  const timeLimitMinutes = timeRemaining ? undefined : DEFAULT_TIME_LIMIT;
-
-  const gameData = JSON.stringify(gameState, undefined, 2);
-
-  return res.render('admin', {
-    gameData,
-    challenge,
-    challengeList,
-    timeLimitMinutes,
+app.get("/admin", (req, res) => {
+  return res.render("admin", {
+    gameData: JSON.stringify(game.get(), undefined, 2),
+    challenge: game.getCurrentChallenge(),
+    challengeList: challengeLibrary.getChallenges(),
+    timeLimitMinutes: game.getTimeRemainingSeconds() > 0 ? "" : DEFAULT_TIME_LIMIT,
     game: game.get(),
   });
 });
 
-app.post('/start', (req, res) => {
-  const timeLimitMinutesString: string | undefined = req.body.timeLimitMinutes;
+app.post("/start", (req, res) => {
+  const timeLimitMinutes: string | undefined = req.body.timeLimitMinutes;
 
-  const data: GameStart = {
+  game.start({
     key: req.body.key,
-    timeLimitMinutes: timeLimitMinutesString ? parseFloat(timeLimitMinutesString) : undefined,
-  };
+    timeLimitMinutes: timeLimitMinutes ? parseFloat(timeLimitMinutes) : undefined,
+  });
 
-  game.start(data);
-
-  return res.redirect('/admin');
+  return res.redirect("/admin");
 });
 
-app.get('/stop', (req, res) => {
+app.get("/stop", (req, res) => {
   game.stop();
-  return res.redirect('/admin');
+  return res.redirect("/admin");
 });
 
-app.get('/challenge', (req, res) => {
-  const key = req.query.key;
-
-  const challenge = challengeLibrary.getChallenge(key);
-
-  return res.json({ ...challenge, key });
+app.get("/challenge", (req, res) => {
+  const key = req.query.key?.toString();
+  const challenge = key && challengeLibrary.getChallenge(key);
+  return challenge ? res.json({ ...challenge, key }) : res.status(404).end();
 });
 
-export = app;
+export default app;

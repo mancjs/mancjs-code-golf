@@ -1,17 +1,19 @@
-import fs = require('fs');
-import path = require('path');
-import crypto = require('crypto');
-import lodash = require('lodash');
-import { challenges } from '../challenges';
+import fs = require("fs");
+import path = require("path");
+import crypto = require("crypto");
+import lodash = require("lodash");
+const { jsmin } = require("jsmin");
 
-const DEFAULT_TIME_LIMIT = 10;
+import { challenges } from "../challenges";
 
-interface GameStart {
+const DEFAULT_TIME_LIMIT = 20;
+
+export interface GameStart {
   key: string;
   timeLimitMinutes?: number;
 }
 
-interface Game {
+export interface Game {
   key: string;
   running: boolean;
   expiresEpoch: number;
@@ -25,29 +27,27 @@ interface AddEntryRequest {
   key: string;
 }
 
-interface Entry extends AddEntryRequest {
+export interface Entry extends AddEntryRequest {
   gravatar: string;
   strokes: number;
   updated: Date;
   valid: boolean;
 }
 
-const jsmin = require('jsmin').jsmin;
-
 let game: Game | undefined;
 let expiresTimeout: NodeJS.Timer | undefined;
-const savePath = path.join(__dirname, '..', '..', 'data', 'game.json');
+const savePath = path.join(__dirname, "..", "..", "data", "game.json");
 
-const start = (data: GameStart) => {
+export const start = (data: GameStart) => {
   const getNewExpires = (timeLimitMinutes: number) => {
-    return (Date.now() / 1000) + (timeLimitMinutes * 60);
+    return Date.now() / 1000 + timeLimitMinutes * 60;
   };
 
   if (data.timeLimitMinutes && isNaN(data.timeLimitMinutes)) {
-    throw new Error('Invalid time limit');
+    throw new Error("Invalid time limit");
   }
 
-  if (game && game.key === data.key) {
+  if (game?.key === data.key) {
     game.running = true;
 
     if (data.timeLimitMinutes) {
@@ -70,59 +70,59 @@ const start = (data: GameStart) => {
 };
 
 const applyCountdown = () => {
-  if (!game || !game.running) return;
+  if (!game?.running) {
+    return;
+  }
 
   clearCountdown();
-
-  const expiresAt = (game.expiresEpoch * 1000 - Date.now());
-
-  expiresTimeout = setTimeout(stop, expiresAt);
+  expiresTimeout = setTimeout(stop, game.expiresEpoch * 1000 - Date.now());
 };
 
 const clearCountdown = () => {
   if (expiresTimeout) {
     clearTimeout(expiresTimeout);
-
     expiresTimeout = undefined;
   }
 };
 
-const stop = () => {
+export const stop = () => {
   if (game) {
     game.running = false;
   }
 
   clearCountdown();
-
   return save();
 };
 
-const get = () => {
+export const get = (): (Game | undefined) => {
   return game;
 };
 
-const getCurrentChallenge = () => {
+export const getCurrentChallenge = () => {
   return game ? challenges[game.key] : null;
 };
 
-const getOrError = () => {
-  if (!game) throw new Error('No game');
+export const getOrError = () => {
+  if (!game) {
+    throw new Error("No game");
+  }
 
   return game;
 };
 
-const getTimeRemainingSeconds = () => {
-  if (game && game.running) {
-    return (game.expiresEpoch - (Date.now() / 1000));
+export const getTimeRemainingSeconds = () => {
+  if (!game?.running) {
+    return 0;
   }
+
+  return game.expiresEpoch - Date.now() / 1000;
 };
 
-const addEntry = (data: AddEntryRequest): { entry?: Partial<Entry>, err?: string } => {
+export const addEntry = (data: AddEntryRequest): { entry?: Partial<Entry>; err?: string } => {
 
   console.log(data);
-
   const createKey = () => {
-    return (Math.round(Math.random() * 100000000000)).toString(36);
+    return Math.round(Math.random() * 100000000000).toString(36);
   };
 
   const getGravatarUrl = (email: string) => {
@@ -141,14 +141,14 @@ const addEntry = (data: AddEntryRequest): { entry?: Partial<Entry>, err?: string
     }
   };
 
-  if (!game || !game.running) {
-    return { err: 'Game is not running' };
+  if (!game?.running) {
+    return { err: "Game is not running" };
   }
 
   let entry = lodash.find(game.entries, { email: data.email });
 
   if (entry && entry.key !== data.key) {
-    return { err: 'This email address is taken' };
+    return { err: "This email address is taken" };
   }
 
   if (!entry) {
@@ -163,37 +163,40 @@ const addEntry = (data: AddEntryRequest): { entry?: Partial<Entry>, err?: string
       }
 
       entry = {
-        email: data.email,
+        key: createKey(),email: data.email,
         gravatar: getGravatarUrl(data.email),
         team: data.team,
         answer: data.answer,
-        key: createKey(),
+
         strokes: strokes,
+      valid: false,
         updated: new Date(),
-        valid: false,
+
       };
 
       game.entries.push(entry);
       save();
       return { entry };
-    } catch (e) {
+    } catch (e: any) {
       return { err: e.message };
     }
   }
 
-  if (entry && entry.key === data.key) {
-    entry.updated = new Date;
+  if (entry?.key === data.key) {
+    entry.updated = new Date();
     entry.answer = data.answer;
     entry.strokes = countStrokes(data.answer);
     save();
     return { entry };
   }
 
-  return { err: 'Unknown error' };
+  return { err: "Unknown error" };
 };
 
-const setValid = (key: string, valid: boolean) => {
-  if (!game) return;
+export const setValid = (key: string, valid: boolean) => {
+  if (!game) {
+    return;
+  }
 
   const entry = lodash.find(game.entries, { key });
 
@@ -205,30 +208,14 @@ const setValid = (key: string, valid: boolean) => {
 
 const save = () => {
   applyCountdown();
-
   return fs.writeFileSync(savePath, JSON.stringify(game));
 };
 
 const load = () => {
   if (fs.existsSync(savePath)) {
-    game = JSON.parse(fs.readFileSync(savePath, 'utf8'));
-
+    game = JSON.parse(fs.readFileSync(savePath, "utf8"));
     applyCountdown();
   }
 };
 
 load();
-
-export {
-  GameStart,
-  Game,
-  Entry,
-  addEntry,
-  setValid,
-  start,
-  stop,
-  get,
-  getCurrentChallenge,
-  getOrError,
-  getTimeRemainingSeconds,
-};

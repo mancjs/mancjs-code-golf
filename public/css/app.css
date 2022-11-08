@@ -32,6 +32,7 @@ input[type='text'], textarea {
 
 textarea {
   font-family: monospace;
+  font-size: 16px;
 }
 
 input[readonly] {
@@ -192,4 +193,13 @@ code {
 .bs-callout-info {
   background-color: #f0f7fd;
   border-color: #d0e3f0;
+}
+
+.challenge-info {
+  margin-bottom: 20px;
+}
+
+.challenge-example {
+  font-family: Courier, monospace;
+  font-size: inherit;
 }

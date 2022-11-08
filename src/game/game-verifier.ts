@@ -1,15 +1,19 @@
-import child_process = require('child_process');
-import game = require('./game');
-import { VerifyJob } from './verifier';
-import { getChallenge } from './challenge-library';
+import child_process = require("child_process");
 
-const verify = (answer: string, callback: (res: { valid: false, err: string }) => void) => {
+import { getChallenge } from "./challenge-library";
+import type { VerifyJob } from "./verifier";
+import * as game from "./game";
+
+const MAX_RUNTIME = 10000;
+
+export const verify = (answer: string, callback: (res: { valid: false; err: string }) => void) => {
   const currentGame = game.getOrError();
-  const verifier = child_process.fork(__dirname + '/verifier');
-
+  const verifier = child_process.fork(__dirname + "/verifier");
   const challenge = getChallenge(currentGame.key);
 
-  if (!challenge) throw new Error('Challenge not found');
+  if (!challenge) {
+    throw new Error("Challenge not found");
+  }
 
   const job: VerifyJob = {
     answer,
@@ -20,20 +24,17 @@ const verify = (answer: string, callback: (res: { valid: false, err: string }) =
 
   verifier.send(job);
 
-  const timer = setTimeout(
-    () => {
-      verifier.kill();
-      return callback({ valid: false, err: 'script took too long (5s)' });
-    },
-    5000,
-  );
+  const timer = setTimeout(() => {
+    verifier.kill();
 
-  verifier.on('message', (result) => {
+    return callback({
+      valid: false,
+      err: `script took too long to complete (${MAX_RUNTIME / 1000}s)`,
+    });
+  }, MAX_RUNTIME);
+
+  verifier.on("message", (result: any) => {
     clearTimeout(timer);
     return callback({ valid: result.valid, err: result.err });
   });
-};
-
-export {
-  verify,
 };

@@ -1,11 +1,11 @@
-import fs = require('fs');
-import lodash = require('lodash');
-import express = require('express');
-import multiparty = require('multiparty');
-import game = require('../game/game');
-import { Game, Entry } from '../game/game';
-import gameVerifier = require('../game/game-verifier');
-import { challenges } from '../challenges';
+import fs = require("fs");
+import lodash = require("lodash");
+import express = require("express");
+import multiparty = require("multiparty");
+
+import * as game from "../game/game";
+import { verify } from "../game/game-verifier";
+import { challenges } from "../challenges";
 import path = require('path');
 
 const app = express();
@@ -50,11 +50,11 @@ app.get('/vs/basic-languages/javascript/javascript.js', (req, res) => {
   res.sendFile(path.resolve('node_modules/monaco-editor/min/vs/basic-languages/javascript/javascript.js'));
 });
 
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
   const currentGame = game.get();
 
   if (!currentGame) {
-    return res.render('no-game');
+    return res.render("no-game");
   }
 
   const session = {
@@ -63,46 +63,39 @@ app.get('/', (req, res) => {
     key: req.query.key,
   };
 
-  const currentEntry = (<Entry | undefined>lodash.find(currentGame.entries, { email: session.email }));
-  const currentAnswer = currentEntry ? currentEntry.answer : '';
-
-  // tslint:disable-next-line:max-line-length
-  const validEntries = lodash.sortBy(lodash.filter(currentGame.entries, { valid: true }), 'strokes');
-  // tslint:disable-next-line:max-line-length
-  const invalidEntries = lodash.sortBy(lodash.filter(currentGame.entries, { valid: false }), 'strokes');
-
-  const allEntries = validEntries.concat(invalidEntries);
-
   const challenge = challenges[currentGame.key];
-
   const timeRemaining = game.getTimeRemainingSeconds();
 
-  let clock: string | undefined;
+  let clock = "";
 
-  if (timeRemaining && timeRemaining > 0) {
+  if (timeRemaining > 0) {
     const min = Math.floor(timeRemaining / 60).toString();
-    const sec = Math.floor(timeRemaining % 60).toString().padStart(2, '0');
-
-    clock = [min, sec].join(':');
+    const sec = Math.floor(timeRemaining % 60).toString().padStart(2, "0");
+    clock = [min, sec].join(":");
   } else {
-    clock = '0:00';
+    clock = "0:00";
   }
 
-  return res.render('play', {
+  const validEntries = lodash.sortBy(lodash.filter(currentGame.entries, { valid: true }), "strokes");
+  const invalidEntries = lodash.sortBy(lodash.filter(currentGame.entries, { valid: false }), "strokes");
+  const currentAnswer= currentGame.entries.find((entry) => entry.email == session.email)?.answer || ""
+
+
+  return res.render("play", {
     session,
     challenge,
     clock,
     currentAnswer,
     game: currentGame,
-    entries: allEntries,
+    entries: [...validEntries, ...invalidEntries],
     err: req.query.err,
-    autoreload: req.query.autoreload === 'true',
-    showaddentry: req.query.autoreload !== 'true',
+    autoreload: req.query.autoreload === "true",
+    showaddentry: req.query.autoreload !== "true",
   });
 });
 
-app.get('/solution/:key', (req, res) => {
-  const getSolution = (game: Game, key: string) => {
+app.get("/solution/:key", (req, res) => {
+  const getSolution = (game: game.Game, key: string) => {
     const entry = lodash.find(game.entries, { key });
 
     if (entry) {
@@ -117,15 +110,21 @@ app.get('/solution/:key', (req, res) => {
     return res.send(403);
   }
 
-  return res.set('Content-Type', 'text/plain').send(solution || 'No solution found');
+  return res.set("Content-Type", "text/plain").send(solution || "No solution found");
 });
 
-app.post('/submit', (req, res) => {
-  const redirect = (result: Partial<Entry>, err: {}) => {
-    const url = '/?email=' + (result.email || '')
-      + '&team=' + (result.team || '')
-      + '&key=' + (result.key || '')
-      + '&err=' + (err || '');
+app.post("/submit", (req, res) => {
+  const redirect = (result: Partial<game.Entry>, err: {}) => {
+    const url = [
+      "/?email=",
+      result.email,
+      "&team=",
+      result.team,
+      "&key=",
+      result.key,
+      "&err=",
+      err,
+    ].filter(p => !!p).join('');
 
     return res.redirect(url);
   };
@@ -133,12 +132,12 @@ app.post('/submit', (req, res) => {
   const form = new multiparty.Form();
 
   form.parse(req, (err, fields, files) => {
-    const email = fields['email'][0];
-    const team = fields['team'][0];
-    const key = fields['key'][0];
+    const email = fields["email"][0];
+    const team = fields["team"][0];
+    const key = fields["key"][0];
     const answer = fields['answer'][0];
 
-    const file = files && files['file'] && files['file'][0] ? files['file'][0].path : null;
+    const file = files && files["file"] && files["file"][0] ? files["file"][0].path : null;
 
     const entry = {
       email,
@@ -153,8 +152,8 @@ app.post('/submit', (req, res) => {
       return redirect(result.entry || {}, result.err);
     }
 
-    gameVerifier.verify(entry.answer, (status) => {
-      if (result.entry && result.entry.key) {
+    verify(entry.answer, (status) => {
+      if (result?.entry?.key) {
         game.setValid(result.entry.key, status.valid);
       }
 
@@ -163,4 +162,4 @@ app.post('/submit', (req, res) => {
   });
 });
 
-export = app;
+export default app;

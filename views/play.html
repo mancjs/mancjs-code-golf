@@ -13,8 +13,14 @@
       <div class="col-md-12">
         <div class="bs-callout bs-callout-info">
           <h4>{{challenge.title}}</h4>
+          <div class="challenge-info">
+            {{challenge.description}}
+          </div>
 
-          <pre>{{challenge.description}}</pre>
+          <h4>Example</h4>
+          <div class="challenge-example">
+            {{challenge.example}}
+          </div>
         </div>
 
         <div class="clock">
@@ -81,7 +87,7 @@
             <h4>You can now view other solutions by clicking on them.</h4>
             {{/game.running}}
 
-            <p>View the <a href="https://gist.github.com/cjdell/7e98a0bb1370df71ed4376bc30aa9999" target="_blank">rules</a></p>
+            <p>View the <a href="https://github.com/mancjs/mancjs-code-golf#playing" target="_blank">rules</a></p>
           </div>
         </div>
       </div>

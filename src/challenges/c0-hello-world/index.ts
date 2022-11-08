@@ -1,12 +1,12 @@
-import { Challenge } from '..';
-import solution from './solution';
+import type { Challenge } from "..";
+import solution from "./solution";
 
 const challenge: Challenge = {
-  input: '',
-  title: 'Hello world',
+  input: "",
+  title: "Hello World",
   output: solution(),
-  // tslint:disable-next-line:max-line-length
-  description: "Return the string 'Hello world!'".trim(),
+  description: `Write a function that returns "Hello, World!".`,
+  example: `⟶ "Hello, World!"`,
 };
 
 export = challenge;
